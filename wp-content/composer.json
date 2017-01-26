@@ -1,0 +1,24 @@
+{
+    "name": "xwp/wp-docker",
+    "license": "GPLv2",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    ],
+    "authors": [
+        {
+            "name": "Derek Herman",
+            "email": "derek.herman@xwp.co"
+        }
+    ],
+    "require": {
+        "wpackagist-plugin/rest-api": "dev-trunk"
+    },
+    "extra": {
+        "installer-paths": {
+            "plugins/{$name}/": ["type:wordpress-plugin"]
+        }
+    }
+}

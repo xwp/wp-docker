@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+    nginx:
+        image: nginx
+        volumes:
+            - ./nginx/ssl:/etc/ssl
+            - ./nginx/conf.d/local.conf:/etc/nginx/conf.d/default.conf
+            - ./wp-content:/var/www/html/wp-content:ro
+        volumes_from:
+            - php:ro
+        links:
+            - php
+        ports:
+            - 80:80
+            - 443:443
+
+    php:
+        build: .
+        links:
+            - mysql
+            - memcached
+        volumes:
+            - ./wp-content:/var/www/html/wp-content
+            - ./wp-config:/var/www/html/wp-config:ro
+        environment:
+            WORDPRESS_DB_HOST: mysql:3306
+            WORDPRESS_DB_PASSWORD: wordpress
+            WORDPRESS_DB_NAME: wordpress
+            WORDPRESS_DB_USER: wordpress
+            WP_DOMAIN: wp.local
+            WP_ADMIN_USER: wordpress
+            WP_EMAIL: dev@wp.local
+
+    mysql:
+        image: mariadb
+        volumes:
+            - mysql:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: wordpress
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: wordpress
+
+    memcached:
+        image: memcached
+
+volumes:
+    mysql:
+        driver: local

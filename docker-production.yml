@@ -1,0 +1,17 @@
+version: '2'
+services:
+    php:
+        restart: on-failure
+        environment:
+            FORCE_SSL_ADMIN: 1
+
+    nginx:
+        restart: on-failure
+        ports:
+            - 8000:80
+
+    mysql:
+        restart: on-failure
+
+    memcached:
+        restart: on-failure

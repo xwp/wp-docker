@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Stop and remove containers
+echo
+echo "Stopping and removing containers..."
+docker-compose down
+
+echo
+echo "Done"

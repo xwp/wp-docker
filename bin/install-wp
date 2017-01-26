@@ -1,0 +1,52 @@
+#!/bin/bash
+
+function is_db_up() {
+    RESULT=`mysql -h ${WORDPRESS_DB_HOST%:*} \
+                  -P${WORDPRESS_DB_HOST#*:} \
+                  -u ${WORDPRESS_DB_USER} \
+                  -p${WORDPRESS_DB_PASSWORD} \
+                  --skip-column-names \
+                  -e "SHOW DATABASES LIKE '${WORDPRESS_DB_NAME}'" \
+                  2>/dev/null`
+
+    if [ "$RESULT" == "${WORDPRESS_DB_NAME}" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+until is_db_up; do
+   echo "Waiting for database to become available..."
+   sleep 5
+done
+
+echo "Database is available. Continuing..."
+
+if ! $(wp core is-installed --allow-root --path=/usr/src/wordpress); then
+    wp core install \
+        --allow-root \
+        --path=/usr/src/wordpress \
+        --url=${WP_DOMAIN} \
+        --title="Docker WordPress" \
+        --admin_user=${WP_ADMIN_USER} \
+        --admin_password="wordpress" \
+        --admin_email=${WP_EMAIL} \
+        --skip-email
+fi
+
+echo "Installing Plugins..."
+
+cd ../../../var/www/html/wp-content
+composer install
+cd -
+
+echo "Activating Plugins..."
+
+wp plugin activate \
+	rest-api \
+	--allow-root
+
+echo "Done!"
+
+php-fpm -F

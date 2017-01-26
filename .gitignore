@@ -1,0 +1,12 @@
+# WordPress Resources
+wp-content/themes/twentysixteen
+wp-content/uploads
+wp-content/upgrade
+wp-config/secrets.php
+
+# Docker Resources
+docker-custom.yml
+
+# Composer Resources
+wp-content/plugins/rest-api
+wp-content/vendor
