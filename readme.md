@@ -27,15 +27,11 @@ Stop:
 bin/down
 ```
 
-Although it's not recommended, you can alternatively use:
+Alternatively use:
 
 ```
 docker-compose down
 ```
-
-## Updates
-
-1. `bin/up`
 
 ## Run WP-CLI Commands
 
