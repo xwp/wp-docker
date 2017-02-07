@@ -13,4 +13,6 @@ wp-content/plugins/query-monitor
 wp-content/db.php
 wp-content/vendor
 
+# Development Resources
 .idea
+node_modules
