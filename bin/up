@@ -1,18 +1,5 @@
 #!/bin/bash
 
-# Ensure the plugin and theme directories exist
-mkdir -p wp-content/themes
-mkdir -p wp-content/plugins
-
-# Checkout/update default theme
-echo
-echo "Checking out theme..."
-if [ -d "wp-content/themes/twentysixteen" ]; then
-	git -C wp-content/themes/twentysixteen pull
-else
-	git clone https://github.com/WordPress/twentysixteen wp-content/themes/twentysixteen
-fi
-
 # Build containers
 echo
 echo "Building containers..."
@@ -25,3 +12,6 @@ fi
 
 echo
 echo "Done"
+
+echo
+grep "wp.local" /etc/hosts > /dev/null || echo 'Be sure to add `127.0.0.1 wp.local` to your /etc/hosts file'

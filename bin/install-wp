@@ -23,10 +23,12 @@ done
 
 echo "Database is available. Continuing..."
 
-if ! $(wp core is-installed --allow-root --path=/usr/src/wordpress); then
+wp core download --allow-root --path=/var/www/html/wordpress
+
+if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress); then
     wp core install \
         --allow-root \
-        --path=/usr/src/wordpress \
+        --path=/var/www/html/wordpress \
         --url=${WP_DOMAIN} \
         --title="Docker WordPress" \
         --admin_user=${WP_ADMIN_USER} \
@@ -35,9 +37,22 @@ if ! $(wp core is-installed --allow-root --path=/usr/src/wordpress); then
         --skip-email
 fi
 
+# Ensure the plugin and theme directories exist
+mkdir -p /var/www/html/wp-content/themes
+mkdir -p /var/www/html/wp-content/plugins
+
+# Checkout/update default theme
+echo
+echo "Checking out theme..."
+if [ -d "wp-content/themes/twentysixteen" ]; then
+	git -C wp-content/themes/twentysixteen pull
+else
+	git clone https://github.com/WordPress/twentysixteen wp-content/themes/twentysixteen
+fi
+
 echo "Installing Plugins..."
 
-cd ../../../var/www/html/wp-content
+cd /var/www/html/wp-content
 composer install
 cd -
 
