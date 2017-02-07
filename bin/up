@@ -5,9 +5,9 @@ echo
 echo "Building containers..."
 docker-compose pull
 if [ -e "./docker-custom.yml" ]; then
-	docker-compose -f docker-compose.yml -f docker-custom.yml up --build -d
+	docker-compose -f docker-compose.yml -f docker-custom.yml up --build
 else
-	docker-compose up --build -d
+	docker-compose up --build
 fi
 
 echo

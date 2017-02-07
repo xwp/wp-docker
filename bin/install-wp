@@ -44,10 +44,10 @@ mkdir -p /var/www/html/wp-content/plugins
 # Checkout/update default theme
 echo
 echo "Checking out theme..."
-if [ -d "wp-content/themes/twentysixteen" ]; then
-	git -C wp-content/themes/twentysixteen pull
+if [ -d "../wp-content/themes/twentyseventeen" ]; then
+	git -C ../wp-content/themes/twentyseventeen pull
 else
-	git clone https://github.com/WordPress/twentysixteen wp-content/themes/twentysixteen
+	git clone https://github.com/WordPress/twentyseventeen.git ../wp-content/themes/twentyseventeen
 fi
 
 echo "Installing Plugins..."
@@ -59,7 +59,7 @@ cd -
 echo "Activating Plugins..."
 
 wp plugin activate \
-	rest-api \
+	query-monitor \
 	--allow-root
 
 echo "Done!"

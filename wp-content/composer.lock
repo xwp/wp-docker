@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "da04e4475a2abaf72001c4998848d955",
+    "content-hash": "016e57e375f3c0ee83a486d6cb89b740",
     "packages": [
         {
             "name": "composer/installers",
@@ -114,16 +114,16 @@
             "time": "2016-08-13T20:53:52+00:00"
         },
         {
-            "name": "wpackagist-plugin/rest-api",
+            "name": "wpackagist-plugin/query-monitor",
             "version": "dev-trunk",
             "source": {
                 "type": "svn",
-                "url": "https://plugins.svn.wordpress.org/rest-api/",
+                "url": "https://plugins.svn.wordpress.org/query-monitor/",
                 "reference": "trunk"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/rest-api.zip",
+                "url": "https://downloads.wordpress.org/plugin/query-monitor.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -131,15 +131,15 @@
                 "composer/installers": "~1.0"
             },
             "type": "wordpress-plugin",
-            "homepage": "https://wordpress.org/plugins/rest-api/",
-            "time": "2016-10-19T15:05:29+00:00"
+            "homepage": "https://wordpress.org/plugins/query-monitor/",
+            "time": "2016-12-06T20:53:19+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "wpackagist-plugin/rest-api": 20
+        "wpackagist-plugin/query-monitor": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

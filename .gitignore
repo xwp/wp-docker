@@ -1,5 +1,5 @@
 # WordPress Resources
-wp-content/themes/twentysixteen
+wp-content/themes/twentyseventeen
 wp-content/uploads
 wp-content/upgrade
 wp-config/secrets.php
@@ -9,7 +9,8 @@ wordpress
 docker-custom.yml
 
 # Composer Resources
-wp-content/plugins/rest-api
+wp-content/plugins/query-monitor
+wp-content/db.php
 wp-content/vendor
 
 .idea

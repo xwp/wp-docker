@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "wpackagist-plugin/rest-api": "dev-trunk"
+        "wpackagist-plugin/query-monitor": "dev-trunk"
     },
     "extra": {
         "installer-paths": {
