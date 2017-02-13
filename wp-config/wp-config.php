@@ -7,10 +7,10 @@ foreach( glob( '/var/www/html/wp-config/*.php' ) as $config ) {
 	require( $config );
 }
 
-define( 'DB_NAME', $_ENV['WORDPRESS_DB_NAME'] );
-define( 'DB_USER', $_ENV['WORDPRESS_DB_USER'] );
-define( 'DB_PASSWORD', $_ENV['WORDPRESS_DB_PASSWORD'] );
-define( 'DB_HOST', $_ENV['WORDPRESS_DB_HOST'] );
+define( 'DB_NAME', $_ENV['WP_DB_NAME'] );
+define( 'DB_USER', $_ENV['WP_DB_USER'] );
+define( 'DB_PASSWORD', $_ENV['WP_DB_PASSWORD'] );
+define( 'DB_HOST', $_ENV['WP_DB_HOST'] );
 
 $table_prefix = 'wp_';
 
