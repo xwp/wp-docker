@@ -27,12 +27,12 @@ services:
             - ./wp-content:/var/www/html/wp-content
             - ./wp-config:/var/www/html/wp-config:ro
         environment:
-            WORDPRESS_DB_HOST: mysql
-            WORDPRESS_DB_PASSWORD: wordpress
-            WORDPRESS_DB_NAME: wordpress
-            WORDPRESS_DB_USER: wordpress
-            WORDPRESS_THEME_NAME: twentyseventeen
-            WORDPRESS_THEME_GIT_URL: https://github.com/WordPress/twentyseventeen.git
+            WP_DB_HOST: mysql
+            WP_DB_PASSWORD: wordpress
+            WP_DB_NAME: wordpress
+            WP_DB_USER: wordpress
+            WP_THEME_NAME: twentyseventeen
+            WP_THEME_CLI: 1
             WP_TESTS_DB_HOST: mysql
             WP_TESTS_DB_PASSWORD: wptests
             WP_TESTS_DB_NAME: wptests
