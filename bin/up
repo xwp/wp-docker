@@ -4,14 +4,11 @@
 echo
 echo "Building containers..."
 docker-compose pull
-if [ -e "./docker-custom.yml" ]; then
+if [ -e "docker-custom.yml" ]; then
 	docker-compose -f docker-compose.yml -f docker-custom.yml up --build
 else
-	docker-compose up --build
+    docker-compose up --build
 fi
 
 echo
 echo "Done"
-
-echo
-grep "wp.local" /etc/hosts > /dev/null || echo 'Be sure to add `127.0.0.1 wp.local` to your /etc/hosts file'

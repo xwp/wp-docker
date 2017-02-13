@@ -31,6 +31,8 @@ services:
             WORDPRESS_DB_PASSWORD: wordpress
             WORDPRESS_DB_NAME: wordpress
             WORDPRESS_DB_USER: wordpress
+            WORDPRESS_THEME_NAME: twentyseventeen
+            WORDPRESS_THEME_GIT_URL: https://github.com/WordPress/twentyseventeen.git
             WP_TESTS_DB_HOST: mysql
             WP_TESTS_DB_PASSWORD: wptests
             WP_TESTS_DB_NAME: wptests

@@ -41,7 +41,7 @@ else
     echo "Installing WordPress..."
 	git clone https://github.com/xwp/wordpress-develop.git wordpress
 fi
-cd -
+cd - >/dev/null
 
 # Copy config files
 echo
@@ -67,31 +67,47 @@ mkdir -p /var/www/html/wp-content/plugins
 
 # Checkout/update default theme
 echo
-echo "Checking out theme..."
-if [ -d "../wp-content/themes/twentyseventeen" ]; then
-	git -C ../wp-content/themes/twentyseventeen pull
+if [ ${WORDPRESS_THEME_NAME} ] && [ ${WORDPRESS_THEME_GIT_URL} ]; then
+    if [ -d "../wp-content/themes/${WORDPRESS_THEME_NAME}" ]; then
+        echo "Checking out theme..."
+        git -C ../wp-content/themes/${WORDPRESS_THEME_NAME} pull
+    else
+        echo "Cloning theme..."
+        git clone ${WORDPRESS_THEME_GIT_URL} ../wp-content/themes/${WORDPRESS_THEME_NAME}
+    fi
 else
-	git clone https://github.com/WordPress/twentyseventeen.git ../wp-content/themes/twentyseventeen
+    if [ ! ${WORDPRESS_THEME_NAME} ]; then
+        echo "You must add the WORDPRESS_THEME_NAME php environment variable to docker-compose.yml..."
+    elif [ -d "../wp-content/themes/${WORDPRESS_THEME_NAME}" ]; then
+        echo "Theme already installed..."
+    else
+        echo "Could not install theme..."
+    fi
 fi
 
+echo
 echo "Installing Plugins..."
 
 cd /var/www/html/wp-content
 composer install
-cd -
+cd - >/dev/null
 
+echo
 echo "Activating Plugins..."
 
 wp plugin activate \
 	query-monitor \
 	--allow-root
 
+echo
 echo "Creating Tests Database..."
 test_db_command "CREATE DATABASE IF NOT EXISTS ${WP_TESTS_DB_NAME};"
 
+echo
 echo "Granting User Privileges..."
 test_db_command "GRANT ALL PRIVILEGES ON ${WP_TESTS_DB_NAME}.* TO '${WP_TESTS_DB_USER}'@'%' IDENTIFIED BY '${WP_TESTS_DB_PASSWORD}';"
 
+echo
 echo "Flushing Privileges..."
 test_db_command "FLUSH PRIVILEGES;"
 
