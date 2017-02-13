@@ -38,8 +38,8 @@ if [ -d "wordpress/.git" ]; then
 	echo "Updating WordPress..."
 	git -C wordpress pull
 else
-    echo "Installing WordPress..."
-	git clone https://github.com/xwp/wordpress-develop.git wordpress
+    echo "Cloning WordPress Core (could take several minutes)..."
+	git clone ${WP_GIT_URL} wordpress
 fi
 cd - >/dev/null
 
@@ -49,15 +49,18 @@ echo "Adding WordPress Configs..."
 cp /var/www/html/wp-config/wp-config.php /var/www/html/wordpress/wp-config.php
 cp /var/www/html/wp-config/wp-tests-config.php /var/www/html/wordpress/wp-tests-config.php
 
+# Install Core
+echo
+echo "Installing WordPress..."
 if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress/src); then
     wp core install \
         --allow-root \
         --path=/var/www/html/wordpress/src \
         --url=${WP_DOMAIN} \
-        --title="Docker WordPress" \
+        --title="${WP_TITLE}" \
         --admin_user=${WP_ADMIN_USER} \
-        --admin_password="wordpress" \
-        --admin_email=${WP_EMAIL} \
+        --admin_password=${WP_ADMIN_PASSWORD} \
+        --admin_email=${WP_ADMIN_EMAIL} \
         --skip-email
 fi
 

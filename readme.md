@@ -73,7 +73,7 @@ php:
 	environment:
 		WP_DOMAIN: example.com
 		WP_ADMIN_USER: me
-		WP_EMAIL: me@example.com
+		WP_ADMIN_EMAIL: me@example.com
 ```
 
 ## FAQ

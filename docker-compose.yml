@@ -39,7 +39,10 @@ services:
             WP_TESTS_DB_USER: wptests
             WP_DOMAIN: wp.local
             WP_ADMIN_USER: wordpress
-            WP_EMAIL: dev@wp.local
+            WP_ADMIN_PASSWORD: wordpress
+            WP_ADMIN_EMAIL: dev@wp.local
+            WP_TITLE: "WP Docker"
+            WP_GIT_URL: git://develop.git.wordpress.org/
             XDEBUG_CONFIG: remote_host=127.0.0.1
             PHP_IDE_CONFIG: serverName=wp.local
 
