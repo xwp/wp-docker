@@ -7,7 +7,7 @@ $_plugin_files = array();
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
-// Travis CI & Vagrant SSH tests directory.
+// Travis CI tests directory.
 if ( empty( $_tests_dir ) ) {
     $_tests_dir = '/tmp/wordpress-tests';
 }
