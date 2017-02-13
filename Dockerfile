@@ -36,7 +36,6 @@ RUN yes | pecl install xdebug \
 
 COPY ./php/conf.d/wordpress.ini /usr/local/etc/php/conf.d/wordpress.ini
 
-COPY ./wp-config.php /var/www/html/
 WORKDIR /var/www/html/wordpress/
 
 # Install wp-cli
@@ -44,7 +43,12 @@ RUN curl -o /usr/local/bin/wp -SL https://raw.githubusercontent.com/wp-cli/build
 	&& chmod +x /usr/local/bin/wp
 
 # Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+
+# Install PHPUnit
+RUN curl https://phar.phpunit.de/phpunit-5.5.0.phar -L -o phpunit.phar \
+    && chmod +x phpunit.phar \
+    && mv phpunit.phar /usr/local/bin/phpunit
 
 COPY ./bin/install-wp /usr/local/bin/install-wp
 CMD /usr/local/bin/install-wp

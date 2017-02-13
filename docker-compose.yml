@@ -26,10 +26,14 @@ services:
             - ./wp-content:/var/www/html/wp-content
             - ./wp-config:/var/www/html/wp-config:ro
         environment:
-            WORDPRESS_DB_HOST: mysql:3306
+            WORDPRESS_DB_HOST: mysql
             WORDPRESS_DB_PASSWORD: wordpress
             WORDPRESS_DB_NAME: wordpress
             WORDPRESS_DB_USER: wordpress
+            WP_TESTS_DB_HOST: mysql
+            WP_TESTS_DB_PASSWORD: wptests
+            WP_TESTS_DB_NAME: wptests
+            WP_TESTS_DB_USER: wptests
             WP_DOMAIN: wp.local
             WP_ADMIN_USER: wordpress
             WP_EMAIL: dev@wp.local
@@ -38,6 +42,8 @@ services:
 
     mysql:
         image: mariadb
+        ports:
+            - 3306:3306
         volumes:
             - mysql:/var/lib/mysql
         environment:
@@ -45,6 +51,17 @@ services:
             MYSQL_DATABASE: wordpress
             MYSQL_USER: wordpress
             MYSQL_PASSWORD: wordpress
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - mysql
+        ports:
+            - 8181:80
+        environment:
+            PMA_USER: root
+            PMA_PASSWORD: wordpress
+            PMA_HOST: mysql
 
     memcached:
         image: memcached

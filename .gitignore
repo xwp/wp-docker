@@ -16,3 +16,4 @@ wp-content/vendor
 # Development Resources
 .idea
 node_modules
+.DS_Store

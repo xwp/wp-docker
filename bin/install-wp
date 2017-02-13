@@ -16,6 +16,14 @@ function is_db_up() {
     fi
 }
 
+function test_db_command {
+	mysql -h ${WORDPRESS_DB_HOST%:*} \
+          -P${WORDPRESS_DB_HOST#*:} \
+          -uroot \
+          -p${WORDPRESS_DB_PASSWORD} \
+          -e "$1"
+}
+
 until is_db_up; do
    echo "Waiting for database to become available..."
    sleep 5
@@ -23,12 +31,28 @@ done
 
 echo "Database is available. Continuing..."
 
-wp core download --allow-root --path=/var/www/html/wordpress
+# Checkout/update WordPress
+echo
+cd /var/www/html
+if [ -d "wordpress/.git" ]; then
+	echo "Updating WordPress..."
+	git -C wordpress pull
+else
+    echo "Installing WordPress..."
+	git clone https://github.com/xwp/wordpress-develop.git wordpress
+fi
+cd -
 
-if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress); then
+# Copy config files
+echo
+echo "Adding WordPress Configs..."
+cp /var/www/html/wp-config/wp-config.php /var/www/html/wordpress/wp-config.php
+cp /var/www/html/wp-config/wp-tests-config.php /var/www/html/wordpress/wp-tests-config.php
+
+if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress/src); then
     wp core install \
         --allow-root \
-        --path=/var/www/html/wordpress \
+        --path=/var/www/html/wordpress/src \
         --url=${WP_DOMAIN} \
         --title="Docker WordPress" \
         --admin_user=${WP_ADMIN_USER} \
@@ -62,6 +86,16 @@ wp plugin activate \
 	query-monitor \
 	--allow-root
 
+echo "Creating Tests Database..."
+test_db_command "CREATE DATABASE IF NOT EXISTS ${WP_TESTS_DB_NAME};"
+
+echo "Granting User Privileges..."
+test_db_command "GRANT ALL PRIVILEGES ON ${WP_TESTS_DB_NAME}.* TO '${WP_TESTS_DB_USER}'@'%' IDENTIFIED BY '${WP_TESTS_DB_PASSWORD}';"
+
+echo "Flushing Privileges..."
+test_db_command "FLUSH PRIVILEGES;"
+
+echo
 echo "Done!"
 
 php-fpm -F

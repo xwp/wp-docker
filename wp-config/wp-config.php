@@ -1,6 +1,9 @@
 <?php
 
 foreach( glob( '/var/www/html/wp-config/*.php' ) as $config ) {
+    if ( false !== strpos( $config, 'wp-' ) ) {
+        continue;
+    }
 	require( $config );
 }
 

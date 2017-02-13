@@ -1,1 +1,2 @@
 PHPCS_IGNORE='node_modules/*,wordpress/*'
+PHPUNIT_CONFIG='/var/www/html/wp-content/phpunit.xml.dist'
