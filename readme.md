@@ -1,4 +1,6 @@
-# WordPress Docker (Beta)
+# WP Docker (Beta)
+
+A docker environment for WordPress development.
 
 ## Requirements
 
@@ -32,6 +34,28 @@ Alternatively use:
 ```
 docker-compose down
 ```
+
+## Run PHPUnit Commands
+
+Running the default command without any parameters will run the WordPress Core tests.
+ 
+```
+bin/phpunit 
+```
+
+The `bin/phpunit` file is a wrapper for `phpunit` inside Docker and excepts all the same parameters. So the following will run the unit tests for the plugins.
+
+```
+bin/phpunit -c /var/www/html/wp-content/phpunit.xml.dist 
+```
+
+The `pre-commit` hook will run the testsuite for the plugins automatically due to the `PHPUNIT_CONFIG` variable found in the `.dev-lib` configuration file. You can additionally add a coverage clover like the following. 
+
+```
+bin/phpunit -c ../wp-content/phpunit.xml.dist --coverage-html ../wp-content/coverage
+```
+
+__note__: The current working directory when running test in Docker is `/var/www/html/wordpress`.
 
 ## Run WP-CLI Commands
 

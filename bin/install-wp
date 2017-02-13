@@ -98,4 +98,7 @@ test_db_command "FLUSH PRIVILEGES;"
 echo
 echo "Done!"
 
+echo
+grep "wp.local" /etc/hosts > /dev/null || echo 'Be sure to add `127.0.0.1 wp.local` to your /etc/hosts file'
+
 php-fpm -F

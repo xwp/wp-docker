@@ -11,4 +11,13 @@
             <directory prefix="test-" suffix=".php">../wp-content/plugins/demo/tests/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">../wp-content/plugins</directory>
+            <exclude>
+                <directory suffix=".php">../wp-content/plugins/query-monitor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>
