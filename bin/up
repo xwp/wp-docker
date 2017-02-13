@@ -1,26 +1,13 @@
 #!/bin/bash
 
-# Ensure the plugin and theme directories exist
-mkdir -p wp-content/themes
-mkdir -p wp-content/plugins
-
-# Checkout/update default theme
-echo
-echo "Checking out theme..."
-if [ -d "wp-content/themes/twentysixteen" ]; then
-	git -C wp-content/themes/twentysixteen pull
-else
-	git clone https://github.com/WordPress/twentysixteen wp-content/themes/twentysixteen
-fi
-
 # Build containers
 echo
 echo "Building containers..."
 docker-compose pull
-if [ -e "./docker-custom.yml" ]; then
+if [ -e "docker-custom.yml" ]; then
 	docker-compose -f docker-compose.yml -f docker-custom.yml up --build
 else
-	docker-compose up --build
+    docker-compose up --build
 fi
 
 echo
