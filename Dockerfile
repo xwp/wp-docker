@@ -48,7 +48,7 @@ RUN curl -o /usr/local/bin/wp -SL https://raw.githubusercontent.com/wp-cli/build
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
 # Install PHPUnit
-RUN curl https://phar.phpunit.de/phpunit-5.5.0.phar -L -o phpunit.phar \
+RUN curl https://phar.phpunit.de/phpunit-5.7.5.phar -L -o phpunit.phar \
     && chmod +x phpunit.phar \
     && mv phpunit.phar /usr/local/bin/phpunit
 
