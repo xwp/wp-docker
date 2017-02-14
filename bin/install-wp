@@ -62,6 +62,7 @@ wp core download \
 # Symlink config
 echo
 echo "Symlink WordPress Config..."
+unlink ../wordpress/wp-config.php
 ln -s ../wp-config/wp-config.php ../wordpress/wp-config.php
 
 # Install Core
