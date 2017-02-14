@@ -26,6 +26,7 @@ services:
             - ./wordpress:/var/www/html/wordpress
             - ./wp-content:/var/www/html/wp-content
             - ./wp-config:/var/www/html/wp-config:ro
+            - ./tests:/var/www/html/tests
         environment:
             WP_DB_HOST: mysql
             WP_DB_PASSWORD: wordpress
@@ -41,6 +42,7 @@ services:
             WP_ADMIN_USER: wordpress
             WP_ADMIN_PASSWORD: wordpress
             WP_ADMIN_EMAIL: dev@wp.local
+            WP_VERSION: 4.7.2
             WP_TITLE: "WP Docker"
             WP_GIT_URL: git://develop.git.wordpress.org/
             XDEBUG_CONFIG: remote_host=127.0.0.1
