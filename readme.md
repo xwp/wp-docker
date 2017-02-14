@@ -1,6 +1,6 @@
 # WP Docker (Beta)
 
-A docker environment for WordPress development.
+A docker environment for WordPress site development.
 
 ## Requirements
 
@@ -60,6 +60,10 @@ bin/phpunit -c ../tests/phpunit.xml.dist --coverage-html ../tests/coverage
 1. `docker ps`
 1. Get the ID of the PHP container
 1. `docker exec -it <id> <command>`
+
+Alternatively you can use `docker-compose`
+
+1. `docker-compose run --rm php <command>`
 
 ## Deploying
 
