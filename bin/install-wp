@@ -16,7 +16,7 @@ function is_db_up() {
     fi
 }
 
-function test_db_command {
+function test_suite_sql {
 	mysql -h ${WP_DB_HOST%:*} \
           -P${WP_DB_HOST#*:} \
           -uroot \
@@ -31,31 +31,46 @@ done
 
 echo "Database is available. Continuing..."
 
-# Checkout/update WordPress
-echo
-cd /var/www/html
-if [ -d "wordpress/.git" ]; then
-	echo "Updating WordPress..."
-	git -C wordpress pull
-else
-    echo "Cloning WordPress Core (could take several minutes)..."
-	git clone ${WP_GIT_URL} wordpress
-fi
-cd - >/dev/null
+WP_CORE_DIR="/var/www/html/wordpress"
+WP_TESTS_DIR="/var/www/html/tests"
 
-# Copy config files
+if [[ ${WP_VERSION} =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
+	WP_TESTS_TAG="tags/${WP_VERSION}"
+elif [[ ${WP_VERSION} == 'nightly' || ${WP_VERSION} == 'trunk' ]]; then
+	WP_TESTS_TAG="trunk"
+else
+	# http serves a single offer, whereas https serves multiple. we only want one
+	download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
+	grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
+	LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+	if [[ -z "$LATEST_VERSION" ]]; then
+		echo "Latest WordPress version could not be found"
+		exit 1
+	fi
+	WP_TESTS_TAG="tags/$LATEST_VERSION"
+fi
+
+# Download WordPress
 echo
-echo "Adding WordPress Configs..."
-cp /var/www/html/wp-config/wp-config.php /var/www/html/wordpress/wp-config.php
-cp /var/www/html/wp-config/wp-tests-config.php /var/www/html/wordpress/wp-tests-config.php
+echo "Downloading WordPress..."
+wp core download \
+    --allow-root \
+    --path=/var/www/html/wordpress \
+    --version="${WP_VERSION}" \
+    --force
+
+# Symlink config
+echo
+echo "Symlink WordPress Config..."
+ln -s ../wp-config/wp-config.php ../wordpress/wp-config.php
 
 # Install Core
 echo
 echo "Installing WordPress..."
-if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress/src); then
+if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress); then
     wp core install \
         --allow-root \
-        --path=/var/www/html/wordpress/src \
+        --path=/var/www/html/wordpress \
         --url=${WP_DOMAIN} \
         --title="${WP_TITLE}" \
         --admin_user=${WP_ADMIN_USER} \
@@ -113,17 +128,30 @@ wp plugin activate \
 	query-monitor \
 	--allow-root
 
+# Set up testing suite if it doesn't yet exist
+echo
+if [ ! -d $WP_TESTS_DIR ]; then
+    echo "Creating WordPress Test Suite Directory..."
+
+    # set up testing suite
+    mkdir -p $WP_TESTS_DIR
+fi
+
+echo "Updating WordPress Test Suite..."
+svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
+svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+
 echo
 echo "Creating Tests Database..."
-test_db_command "CREATE DATABASE IF NOT EXISTS ${WP_TESTS_DB_NAME};"
+test_suite_sql "CREATE DATABASE IF NOT EXISTS ${WP_TESTS_DB_NAME};"
 
 echo
 echo "Granting User Privileges..."
-test_db_command "GRANT ALL PRIVILEGES ON ${WP_TESTS_DB_NAME}.* TO '${WP_TESTS_DB_USER}'@'%' IDENTIFIED BY '${WP_TESTS_DB_PASSWORD}';"
+test_suite_sql "GRANT ALL PRIVILEGES ON ${WP_TESTS_DB_NAME}.* TO '${WP_TESTS_DB_USER}'@'%' IDENTIFIED BY '${WP_TESTS_DB_PASSWORD}';"
 
 echo
 echo "Flushing Privileges..."
-test_db_command "FLUSH PRIVILEGES;"
+test_suite_sql "FLUSH PRIVILEGES;"
 
 echo
 echo "Done!"

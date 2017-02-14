@@ -1,7 +1,7 @@
 <?php
 
 /* Path to the WordPress codebase you'd like to test. Add a backslash in the end. */
-define( 'ABSPATH', dirname( __FILE__ ) . '/src/' );
+define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/wordpress/' );
 
 // Test with multisite enabled.
 // Alternatively, use the tests/phpunit/multisite.xml configuration file.

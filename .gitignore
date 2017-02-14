@@ -1,19 +1,24 @@
-# WordPress Resources
+# WordPress
 wp-content/themes/twentyseventeen
 wp-content/uploads
 wp-content/upgrade
 wp-config/secrets.php
 wordpress
 
-# Docker Resources
+# Test Suite
+tests/data
+tests/includes
+tests/coverage
+
+# Docker
 docker-custom.yml
 
-# Composer Resources
+# Composer
 wp-content/plugins/query-monitor
 wp-content/db.php
 wp-content/vendor
 
-# Development Resources
+# Development
 .idea
 node_modules
 .DS_Store
