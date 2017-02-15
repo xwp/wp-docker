@@ -1,13 +1,31 @@
 #!/bin/bash
 
+function is_active_theme() {
+    RESULT=`wp theme list \
+        --status=active \
+        --fields=name \
+        --format=csv \
+        --allow-root \
+        --path=/var/www/html/wordpress \
+        | tail -1 \
+        2>/dev/null`
+
+    if [ "$RESULT" != "${WP_THEME_NAME}" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function is_db_up() {
-    RESULT=`mysql -h ${WP_DB_HOST%:*} \
-                  -P${WP_DB_HOST#*:} \
-                  -u ${WP_DB_USER} \
-                  -p${WP_DB_PASSWORD} \
-                  --skip-column-names \
-                  -e "SHOW DATABASES LIKE '${WP_DB_NAME}'" \
-                  2>/dev/null`
+    RESULT=`mysql \
+        -h ${WP_DB_HOST%:*} \
+        -P${WP_DB_HOST#*:} \
+        -u ${WP_DB_USER} \
+        -p${WP_DB_PASSWORD} \
+        --skip-column-names \
+        -e "SHOW DATABASES LIKE '${WP_DB_NAME}'" \
+        2>/dev/null`
 
     if [ "$RESULT" == "${WP_DB_NAME}" ]; then
         return 0
@@ -43,14 +61,15 @@ else
 fi
 
 # Download WordPress
-echo
-echo "Downloading WordPress..."
-wp core download \
-    --allow-root \
-    --path=/var/www/html/wordpress \
-    --version="${WP_VERSION}" \
-    --force
-
+if [ ${WP_VERSION} != $(wp core version --allow-root --path=/var/www/html/wordpress) ]; then
+    echo
+    echo "Downloading WordPress..."
+    wp core download \
+        --allow-root \
+        --path=/var/www/html/wordpress \
+        --version="${WP_VERSION}" \
+        --force
+fi
 # Symlink config
 echo
 echo "Symlink WordPress Config..."
@@ -58,9 +77,9 @@ unlink ../wordpress/wp-config.php
 ln -s ../wp-config/wp-config.php ../wordpress/wp-config.php
 
 # Install Core
-echo
-echo "Installing WordPress..."
 if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress); then
+    echo
+    echo "Installing WordPress..."
     wp core install \
         --allow-root \
         --path=/var/www/html/wordpress \
@@ -104,7 +123,9 @@ else
     elif [ ! -d "../wp-content/themes/${WP_THEME_NAME}" ]; then
         echo "Could not install theme..."
     fi
-    wp theme activate ${WP_THEME_NAME} --allow-root
+    if [ ! is_active_theme ]; then
+        wp theme activate ${WP_THEME_NAME} --allow-root
+    fi
 fi
 
 echo
