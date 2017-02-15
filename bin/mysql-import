@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -z "$*" ]; then
+    echo "Waring: The SQL file path is a required parameter"
+else
+    export TIMESTAMP=$(date +"%Y-%m-%d_%H:%M:%S")
+
+    while IFS= read -r line
+    do
+        export $(echo -e "$line" | sed -e 's/[[:space:]]*$//')
+    done < <(docker-compose run --rm php env | grep MYSQL_)
+
+    echo
+    echo "Importing into the '${WP_DB_NAME}' database..."
+
+    docker-compose run --rm php mysql \
+        -h ${WP_DB_HOST%:*} \
+        -P${WP_DB_HOST#*:} \
+        -u ${WP_DB_USER} \
+        -p${WP_DB_PASSWORD} \
+        ${WP_DB_NAME} \
+        < "$@"
+
+    echo "Done!"
+    echo
+fi

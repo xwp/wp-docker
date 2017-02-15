@@ -22,3 +22,7 @@ wp-content/vendor
 .idea
 node_modules
 .DS_Store
+
+# DB Migrations
+mysql
+!mysql/wptests.sql
