@@ -1,0 +1,25 @@
+#!/bin/bash
+
+export TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
+while IFS= read -r line
+do
+    export $(echo -e "$line" | sed -e 's/[[:space:]]*$//')
+done < <(docker-compose run --rm php env | grep MYSQL_)
+
+mkdir -p mysql/backups
+
+echo
+echo "Exporting the '${WP_DB_NAME}' database..."
+echo "Generating mysql/backups/${WP_DB_NAME}-${TIMESTAMP}.sql..."
+
+docker-compose run --rm php mysqldump --opt \
+    -h ${WP_DB_HOST%:*} \
+    -P${WP_DB_HOST#*:} \
+    -u ${WP_DB_USER} \
+    -p${WP_DB_PASSWORD} \
+    ${WP_DB_NAME} \
+    > mysql/backups/${WP_DB_NAME}-${TIMESTAMP}.sql
+
+echo "Done!"
+echo

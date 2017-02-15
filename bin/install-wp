@@ -16,14 +16,6 @@ function is_db_up() {
     fi
 }
 
-function test_suite_sql {
-	mysql -h ${WP_DB_HOST%:*} \
-          -P${WP_DB_HOST#*:} \
-          -uroot \
-          -p${WP_DB_PASSWORD} \
-          -e "$1"
-}
-
 until is_db_up; do
    echo "Waiting for database to become available..."
    sleep 5
@@ -62,6 +54,7 @@ wp core download \
 # Symlink config
 echo
 echo "Symlink WordPress Config..."
+unlink ../wordpress/wp-config.php
 ln -s ../wp-config/wp-config.php ../wordpress/wp-config.php
 
 # Install Core
@@ -140,18 +133,6 @@ fi
 echo "Updating WordPress Test Suite..."
 svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
 svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
-
-echo
-echo "Creating Tests Database..."
-test_suite_sql "CREATE DATABASE IF NOT EXISTS ${WP_TESTS_DB_NAME};"
-
-echo
-echo "Granting User Privileges..."
-test_suite_sql "GRANT ALL PRIVILEGES ON ${WP_TESTS_DB_NAME}.* TO '${WP_TESTS_DB_USER}'@'%' IDENTIFIED BY '${WP_TESTS_DB_PASSWORD}';"
-
-echo
-echo "Flushing Privileges..."
-test_suite_sql "FLUSH PRIVILEGES;"
 
 echo
 echo "Done!"
