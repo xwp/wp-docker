@@ -41,7 +41,7 @@ docker-compose down
 bin/phpunit 
 ```
 
-Running the default command without any parameters will not run the unit tests. That is due to the fact the current working directory when running test in Docker is the host machines `/{project_root}/bin` directory.
+Running the default command without any parameters will automatically run the testsuite. As well, the `pre-commit` hook will also run the testsuite for the plugins automatically. Both use the `PHPUNIT_CONFIG` variable found in the `.dev-lib` configuration file. 
  
 The `bin/phpunit` file is a wrapper for `phpunit` inside Docker and excepts all the same parameters. So the following will run the unit tests for the plugins.
 
@@ -49,11 +49,13 @@ The `bin/phpunit` file is a wrapper for `phpunit` inside Docker and excepts all 
 bin/phpunit -c /var/www/html/tests/phpunit.xml.dist 
 ```
 
-The `pre-commit` hook will run the testsuite for the plugins automatically due to the `PHPUNIT_CONFIG` variable found in the `.dev-lib` configuration file. You can additionally add a coverage clover by doing the following. Notice that relative paths work, as well. 
+You can additionally add a coverage clover by doing the following. Notice that relative paths work, as well. 
 
 ```
 bin/phpunit -c ../tests/phpunit.xml.dist --coverage-html ../tests/coverage
 ```
+
+_note_: The current working directory when running test in Docker is the host machines `{project_root}/bin` directory.
 
 ## MySQL
 
