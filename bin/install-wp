@@ -1,12 +1,17 @@
 #!/bin/bash
 
+WP_CORE_DIR="/var/www/html/wordpress"
+WP_CONTENT_DIR="/var/www/html/wp-content"
+WP_TESTS_DIR="/var/www/html/tests"
+WP_THEME_DIR="${WP_CONTENT_DIR}/themes/${WP_THEME_NAME}"
+
 function is_active_theme() {
     RESULT=`wp theme list \
         --status=active \
         --fields=name \
         --format=csv \
         --allow-root \
-        --path=/var/www/html/wordpress \
+        --path=${WP_CORE_DIR} \
         | tail -1 \
         2>/dev/null`
 
@@ -41,9 +46,89 @@ done
 
 echo "Database is available. Continuing..."
 
-WP_CORE_DIR="/var/www/html/wordpress"
-WP_TESTS_DIR="/var/www/html/tests"
+# Download WordPress
+if [ ${WP_VERSION} != $(wp core version --allow-root --path=${WP_CORE_DIR}) ]; then
+    echo
+    echo "Downloading WordPress..."
+    wp core download \
+        --allow-root \
+        --path=${WP_CORE_DIR} \
+        --version="${WP_VERSION}" \
+        --force
+fi
+# Symlink config
+echo
+echo "Symlink WordPress Config..."
+unlink ../wordpress/wp-config.php
+ln -s ../wp-config/wp-config.php ../wordpress/wp-config.php
 
+# Install Core
+if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
+    echo
+    echo "Installing WordPress..."
+    wp core install \
+        --allow-root \
+        --path=${WP_CORE_DIR} \
+        --url=${WP_DOMAIN} \
+        --title="${WP_TITLE}" \
+        --admin_user=${WP_ADMIN_USER} \
+        --admin_password=${WP_ADMIN_PASSWORD} \
+        --admin_email=${WP_ADMIN_EMAIL} \
+        --skip-email
+fi
+
+# Ensure the plugin and theme directories exist
+mkdir -p ${WP_CONTENT_DIR}/themes
+mkdir -p ${WP_CONTENT_DIR}/plugins
+
+# Checkout/update default theme
+echo
+if [ ! ${WP_THEME_NAME} ]; then
+    echo "You must add the 'WP_THEME_NAME' environment variable to Docker's php services..."
+else
+    if [ ${WP_THEME_GIT_URL} ]; then
+        if [ -d ${WP_THEME_DIR} ]; then
+            echo "Updating theme..."
+            git -C ${WP_THEME_DIR} pull
+        else
+            echo "Cloning theme..."
+            git clone ${WP_THEME_GIT_URL} ${WP_THEME_DIR}
+        fi
+    elif [ ${WP_THEME_SVN_URL} ]; then
+        if [ -d ${WP_THEME_DIR} ]; then
+            echo "Updating theme..."
+            svn up ${WP_THEME_DIR}
+        else
+            echo "Checking out theme..."
+            svn co ${WP_THEME_SVN_URL} ${WP_THEME_DIR}
+        fi
+    elif [ ${WP_THEME_ZIP_URL} ]; then
+        wp theme install ${WP_THEME_ZIP_URL} --allow-root
+    elif [ ${WP_THEME_CLI} ]; then
+        wp theme install ${WP_THEME_NAME} --allow-root
+    elif [ ! -d ${WP_THEME_DIR} ]; then
+        echo "Could not install theme..."
+    fi
+    if [ ! is_active_theme ]; then
+        wp theme activate ${WP_THEME_NAME} --allow-root
+    fi
+fi
+
+echo
+echo "Installing Plugins..."
+
+cd ${WP_CONTENT_DIR}
+composer install
+cd - >/dev/null
+
+echo
+echo "Activating Plugins..."
+
+wp plugin activate \
+	query-monitor \
+	--allow-root
+
+# Generate the tests SVN tag
 if [[ ${WP_VERSION} =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
 	WP_TESTS_TAG="tags/${WP_VERSION}"
 elif [[ ${WP_VERSION} == 'nightly' || ${WP_VERSION} == 'trunk' ]]; then
@@ -59,88 +144,6 @@ else
 	fi
 	WP_TESTS_TAG="tags/$LATEST_VERSION"
 fi
-
-# Download WordPress
-if [ ${WP_VERSION} != $(wp core version --allow-root --path=/var/www/html/wordpress) ]; then
-    echo
-    echo "Downloading WordPress..."
-    wp core download \
-        --allow-root \
-        --path=/var/www/html/wordpress \
-        --version="${WP_VERSION}" \
-        --force
-fi
-# Symlink config
-echo
-echo "Symlink WordPress Config..."
-unlink ../wordpress/wp-config.php
-ln -s ../wp-config/wp-config.php ../wordpress/wp-config.php
-
-# Install Core
-if ! $(wp core is-installed --allow-root --path=/var/www/html/wordpress); then
-    echo
-    echo "Installing WordPress..."
-    wp core install \
-        --allow-root \
-        --path=/var/www/html/wordpress \
-        --url=${WP_DOMAIN} \
-        --title="${WP_TITLE}" \
-        --admin_user=${WP_ADMIN_USER} \
-        --admin_password=${WP_ADMIN_PASSWORD} \
-        --admin_email=${WP_ADMIN_EMAIL} \
-        --skip-email
-fi
-
-# Ensure the plugin and theme directories exist
-mkdir -p /var/www/html/wp-content/themes
-mkdir -p /var/www/html/wp-content/plugins
-
-# Checkout/update default theme
-echo
-if [ ! ${WP_THEME_NAME} ]; then
-    echo "You must add the 'WP_THEME_NAME' environment variable to the docker php service..."
-else
-    if [ ${WP_THEME_GIT_URL} ]; then
-        if [ -d "../wp-content/themes/${WP_THEME_NAME}" ]; then
-            echo "Updating theme..."
-            git -C ../wp-content/themes/${WP_THEME_NAME} pull
-        else
-            echo "Cloning theme..."
-            git clone ${WP_THEME_GIT_URL} ../wp-content/themes/${WP_THEME_NAME}
-        fi
-    elif [ ${WP_THEME_SVN_URL} ]; then
-        if [ -d "../wp-content/themes/${WP_THEME_NAME}" ]; then
-            echo "Updating theme..."
-            svn up ../wp-content/themes/${WP_THEME_NAME}
-        else
-            echo "Checking out theme..."
-            svn co ${WP_THEME_SVN_URL} ../wp-content/themes/${WP_THEME_NAME}
-        fi
-    elif [ ${WP_THEME_ZIP_URL} ]; then
-        wp theme install ${WP_THEME_ZIP_URL} --allow-root
-    elif [ ${WP_THEME_CLI} ]; then
-        wp theme install ${WP_THEME_NAME} --allow-root
-    elif [ ! -d "../wp-content/themes/${WP_THEME_NAME}" ]; then
-        echo "Could not install theme..."
-    fi
-    if [ ! is_active_theme ]; then
-        wp theme activate ${WP_THEME_NAME} --allow-root
-    fi
-fi
-
-echo
-echo "Installing Plugins..."
-
-cd /var/www/html/wp-content
-composer install
-cd - >/dev/null
-
-echo
-echo "Activating Plugins..."
-
-wp plugin activate \
-	query-monitor \
-	--allow-root
 
 # Set up testing suite if it doesn't yet exist
 echo
@@ -159,6 +162,6 @@ echo
 echo "Done!"
 
 echo
-grep "wp.local" /etc/hosts > /dev/null || echo 'Be sure to add `127.0.0.1 wp.local` to your /etc/hosts file'
+grep "${WP_DOMAIN}" /etc/hosts > /dev/null || echo "Be sure to add '127.0.0.1 ${WP_DOMAIN}' to your /etc/hosts file"
 
 php-fpm -F
