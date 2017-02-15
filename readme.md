@@ -43,19 +43,19 @@ bin/phpunit
 
 Running the default command without any parameters will automatically run the testsuite. As well, the `pre-commit` hook will also run the testsuite for the plugins automatically. Both use the `PHPUNIT_CONFIG` variable found in the `.dev-lib` configuration file. 
  
-The `bin/phpunit` file is a wrapper for `phpunit` inside Docker and excepts all the same parameters. So the following will run the unit tests for the plugins.
+The `bin/phpunit` bash script is a wrapper for `phpunit` inside Docker and excepts all the [same parameters](https://phpunit.de/manual/current/en/textui.html). The following will manually run the unit tests for the plugins.
 
 ```
 bin/phpunit -c /var/www/html/tests/phpunit.xml.dist 
 ```
 
-You can additionally add a coverage clover by doing the following. Notice that relative paths work, as well. 
+You can additionally add a coverage clover by doing the following. 
 
 ```
 bin/phpunit -c ../tests/phpunit.xml.dist --coverage-html ../tests/coverage
 ```
 
-_note_: The current working directory when running test in Docker is the host machines `{project_root}/bin` directory.
+Notice that relative paths work, as well. This is because the current working directory when running test in Docker is the host machines `{project_root}/bin` directory.
 
 ## MySQL
 
