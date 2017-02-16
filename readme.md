@@ -66,13 +66,13 @@ Running the default command without any parameters will automatically run the te
 The `bin/phpunit` bash script is a wrapper for `phpunit` inside Docker and excepts all the [same parameters](https://phpunit.de/manual/current/en/textui.html). The following will manually run the unit tests for the plugins.
 
 ```
-bin/phpunit -c /var/www/html/tests/phpunit.xml.dist 
+bin/phpunit -c /var/www/html/wp-tests/phpunit.xml.dist 
 ```
 
 You can additionally add a coverage clover by doing the following. 
 
 ```
-bin/phpunit -c ../tests/phpunit.xml.dist --coverage-html ../tests/coverage
+bin/phpunit -c ../wp-tests/phpunit.xml.dist --coverage-html ../wp-tests/coverage
 ```
 
 Notice that relative paths work, as well. This is because the current working directory when running test in Docker is the host machines `{project_root}/bin` directory.

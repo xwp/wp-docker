@@ -6,9 +6,9 @@ wp-config/secrets.php
 wordpress
 
 # Test Suite
-tests/data
-tests/includes
-tests/coverage
+wp-tests/data
+wp-tests/includes
+wp-tests/coverage
 
 # Docker
 docker-custom.yml
