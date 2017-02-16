@@ -14,14 +14,18 @@ services:
             MYSQL_USER: wordpress # Must match WP_DB_USER
             MYSQL_PASSWORD: wordpress # Must match WP_DB_PASSWORD
 
-    memcached:
-        image: memcached
+    redis:
+        image: redis
+        ports:
+            - 6379:6379
+        volumes:
+            - redis:/data
 
     php:
         build: .
         links:
             - mysql
-            - memcached
+            - redis
         volumes:
             - ./wordpress:/var/www/html/wordpress
             - ./wp-content:/var/www/html/wp-content
@@ -59,3 +63,4 @@ services:
 
 volumes:
     mysql:
+    redis:

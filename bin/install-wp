@@ -126,6 +126,7 @@ echo "Activating Plugins..."
 
 wp plugin activate \
 	query-monitor \
+	wp-redis \
 	--allow-root
 
 # Generate the tests SVN tag
