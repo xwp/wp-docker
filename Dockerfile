@@ -1,6 +1,6 @@
 FROM php:fpm
 
-# Install memcached for PHP 7
+# Install redis for PHP 7
 RUN apt-get update \
     && apt-get install -y \
         curl \
@@ -15,20 +15,20 @@ RUN apt-get update \
         unzip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz" \
-    && mkdir -p /usr/src/php/ext/memcached \
-    && tar -C /usr/src/php/ext/memcached -zxvf /tmp/memcached.tar.gz --strip 1 \
-    && docker-php-ext-configure memcached \
+RUN curl -L -o /tmp/redis.tar.gz "https://github.com/phpredis/phpredis/archive/3.1.1.tar.gz" \
+    && mkdir -p /usr/src/php/ext/redis \
+    && tar -C /usr/src/php/ext/redis -zxvf /tmp/redis.tar.gz --strip 1 \
+    && docker-php-ext-configure redis \
     && docker-php-ext-configure \
         gd \
         --with-png-dir=/usr \
         --with-jpeg-dir=/usr \
     && docker-php-ext-install \
         gd \
-        memcached \
+        redis \
         mysqli \
         opcache \
-    && rm /tmp/memcached.tar.gz
+    && rm /tmp/redis.tar.gz
 
 # Install xdebug
 RUN yes | pecl install xdebug \

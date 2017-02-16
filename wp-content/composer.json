@@ -14,7 +14,8 @@
         }
     ],
     "require": {
-        "wpackagist-plugin/query-monitor": "dev-trunk"
+        "wpackagist-plugin/query-monitor": "2.13.2",
+        "wpackagist-plugin/wp-redis": "0.6.0"
     },
     "extra": {
         "installer-paths": {
