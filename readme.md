@@ -14,7 +14,13 @@ A docker environment for WordPress site development.
 Start:
 
 ```
-bin/up
+bin/up {optional:parameters}
+```
+
+The optional parameters give you the ability to append configurations to the script. However, the `bin/up` script by default adds the `--build` parameter if nothing is passed to it. For example, you could run Docker in daemon mode by adding `-d` and that would be the only parameter. So if you want the default behaviour plus daemon mode you would do:
+
+```
+bin/up --build -d
 ```
 
 Although it's not recommended, you can alternatively use:
@@ -109,6 +115,18 @@ You could also do this manually with `docker exec` by doing the following.
 1. `docker ps`
 1. Get the ID of the PHP container
 1. `docker exec -it <id> <command>`
+
+## Plugin Scaffolding
+
+Foo Bar is a built-in template plugin for scaffolding WordPress plugins. The [`bin/plugin`](bin/plugin) bash script will copy the `foo-bar` plugin and make the necessary replacements via:
+
+```bash
+bin/plugin "Hello World"
+```
+
+This will create a plugin `hello-world` in the `wp-content/plugins` directory and will greatly speed up plugin development inside this repo.
+
+Be sure to add your new plugin to the `testsuite` inside the [`wp-tests/phpunit.xml.dist`](wp-tests/phpunit.xml.dist) file to ensure your PHPUnit tests are included in the `pre-commit` hook and `bin/phpunit` script.
 
 ## Deploying
 
