@@ -2,7 +2,7 @@
 
 WP_CORE_DIR="/var/www/html/wordpress"
 WP_CONTENT_DIR="/var/www/html/wp-content"
-WP_TESTS_DIR="/var/www/html/tests"
+WP_TESTS_DIR="/var/www/html/wp-tests"
 WP_THEME_DIR="${WP_CONTENT_DIR}/themes/${WP_THEME_NAME}"
 
 function is_active_theme() {

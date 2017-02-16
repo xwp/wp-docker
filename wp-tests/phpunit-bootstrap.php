@@ -12,9 +12,9 @@ if ( empty( $_tests_dir ) ) {
 	$_tests_dir = '/tmp/wordpress-tests';
 }
 
-// Relative path to Core tests directory.
+// Docker tests directory.
 if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
-	$_tests_dir = '/var/www/html/tests';
+	$_tests_dir = '/var/www/html/wp-tests';
 }
 
 if ( ! file_exists( $_tests_dir . '/includes/' ) ) {

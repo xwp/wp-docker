@@ -30,7 +30,7 @@ services:
             - ./wordpress:/var/www/html/wordpress
             - ./wp-content:/var/www/html/wp-content
             - ./wp-config:/var/www/html/wp-config:ro
-            - ./tests:/var/www/html/tests
+            - ./wp-tests:/var/www/html/wp-tests
         environment:
             WP_DB_HOST: mysql
             WP_DB_NAME: wordpress # Must match MYSQL_DATABASE
