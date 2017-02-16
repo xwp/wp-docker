@@ -94,15 +94,21 @@ bin/phpcbf {path}
 To automatically fix as many sniff violations as possible, use the `phpcbf` command in place of the `phpcs` command. The `bin/phpcbf` bash script is a wrapper for `phpcbf` inside Docker with the parameters already supplied. The script requires/accepts an absolute (docker) or relative (host) path to a directory or file. Configurations are automatically set by parameters in the `.dev-lib` file. 
 
 
-## Run WP-CLI Commands
+## Run Commands
+
+```
+bin/run {command}
+```
+
+The `bin/run` bash script is a wrapper the follow `docker-compose` script. This is essential to interacting with the `php` service and its linked services.
+
+1. `docker-compose run --rm php <command>`
+
+You could also do this manually with `docker exec` by doing the following.
 
 1. `docker ps`
 1. Get the ID of the PHP container
 1. `docker exec -it <id> <command>`
-
-Alternatively you can use `docker-compose`
-
-1. `docker-compose run --rm php <command>`
 
 ## Deploying
 
