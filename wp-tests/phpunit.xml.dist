@@ -7,8 +7,8 @@
         convertWarningsToExceptions="true"
 >
     <testsuites>
-        <testsuite name="Demo">
-            <directory prefix="test-" suffix=".php">../wp-content/plugins/demo/tests/</directory>
+        <testsuite name="Foo Bar">
+            <directory prefix="test-" suffix=".php">../wp-content/plugins/foo-bar/tests/</directory>
         </testsuite>
     </testsuites>
 
@@ -17,6 +17,7 @@
             <directory suffix=".php">../wp-content/plugins</directory>
             <exclude>
                 <directory suffix=".php">../wp-content/plugins/query-monitor</directory>
+                <directory suffix=".php">../wp-content/plugins/wp-redis</directory>
             </exclude>
         </whitelist>
     </filter>

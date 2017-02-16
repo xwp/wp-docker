@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Usage: bin/plugin "Hello World"
+# Creates a directory "hello-world" in the plugins directory,
+# performing substitutions on the scaffold "foo-bar" plugin.
+
+set -e
+
+if [ $# != 1 ]; then
+	echo "You must only supply one argument, the plugin name."
+	exit 1
+fi
+
+name="$1"
+if [ -z "$name" ]; then
+	echo "Provide name argument"
+	exit 1
+fi
+
+if ! perl -pe '/^[A-Z][a-z0-9]*( [A-Z][a-z0-9]*)*$/ || exit 1;' > /dev/null <<< "$name"; then
+	echo "Malformed name argument '$name'. Please use title case words separated by spaces. No hypens."
+	exit 1
+fi
+
+slug=$( perl -pe '$_ = lc; s/ /-/g' <<< "$name" )
+prefix=$( perl -pe '$_ = lc; s/ /_/g' <<< "$name" )
+namespace=$( perl -pe 's/ //g' <<< "$name" )
+class=$( perl -pe 's/ /_/g' <<< "$name" )
+
+plugins_path="wp-content/plugins"
+src_path="$plugins_path/foo-bar"
+dest_path="$plugins_path/$slug"
+
+echo "Name: $name"
+echo "Slug: $slug"
+echo "Prefix: $prefix"
+echo "NS: $namespace"
+echo "Class: $class"
+
+cp -r $src_path $dest_path
+
+cd "$dest_path"
+mv foo-bar.php "$slug.php"
+cd tests
+mv test-foo-bar.php "test-$slug.php"
+cd ..
+
+perl -p -i'' -e "s/Foo Bar/$name/g" $( find */ -type f ) *.*
+perl -p -i'' -e "s/foo-bar/$slug/g" $( find */ -type f  ) *.*
+perl -p -i'' -e "s/foo_bar/$prefix/g" $( find */ -type f ) *.*
+perl -p -i'' -e "s/FooBar/$namespace/g" $( find */ -type f ) *.*
+perl -p -i'' -e "s/Foo_Bar/$class/g" $( find */ -type f ) *.*
+
+echo "Plugin is located at:"
+pwd
