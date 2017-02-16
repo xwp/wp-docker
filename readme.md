@@ -35,6 +35,26 @@ Alternatively use:
 docker-compose down
 ```
 
+## MySQL
+
+Docker will execute files with extensions `.sh`, `.sql` and `.sql.gz` that are found in the `mysql` directory. Files will be executed in alphabetical order. You can easily populate your mariadb services by [mounting a SQL dump into that directory](https://docs.docker.com/engine/tutorials/dockervolumes/#mount-a-host-file-as-a-data-volume) and provide [custom images](https://docs.docker.com/reference/builder/) with contributed data. SQL files will be imported by default to the database specified by the `MYSQL_DATABASE` variable. However, it may not be the ideal workflow to load the DB this way so there are additional custom import and export capabilities.
+
+Import:
+
+```
+bin/mysql-import {path-to-sql-file} 
+```
+
+Running the `bin/mysql-import` bash script will import an SQL file into the database which is defined in the `MYSQL_DATABASE` environment variable. All you need to do is supply a path to the SQL file.
+
+Export:
+
+```
+bin/mysql-export 
+```
+
+Running the `bin/mysql-export` bash script will create a backup of the database inside the `mysql/backups` directory with the format `{db-name}-{timestamp}.sql`
+
 ## PHPUnit
 
 ```
@@ -57,25 +77,22 @@ bin/phpunit -c ../tests/phpunit.xml.dist --coverage-html ../tests/coverage
 
 Notice that relative paths work, as well. This is because the current working directory when running test in Docker is the host machines `{project_root}/bin` directory.
 
-## MySQL
-
-Docker will execute files with extensions `.sh`, `.sql` and `.sql.gz` that are found in the `mysql` directory. Files will be executed in alphabetical order. You can easily populate your mariadb services by [mounting a SQL dump into that directory](https://docs.docker.com/engine/tutorials/dockervolumes/#mount-a-host-file-as-a-data-volume) and provide [custom images](https://docs.docker.com/reference/builder/) with contributed data. SQL files will be imported by default to the database specified by the `MYSQL_DATABASE` variable. However, it may not be the ideal workflow to load the DB this way so there are additional custom import and export capabilities.
-
-Import:
+## PHPCS
 
 ```
-bin/mysql-import {path-to-sql-file} 
+bin/phpcs {path}
 ```
 
-Running the `bin/mysql-import` bash script will import an SQL file into the database which is defined in the `MYSQL_DATABASE` environment variable. All you need to do is supply a path to the SQL file.
+Performs preset PHP Coding Standard and WordPress sniffs. The `bin/phpcs` bash script is a wrapper for `phpcs` inside Docker with the parameters already supplied. The script requires/accepts an absolute (docker) or relative (host) path to a directory or file. Configurations are automatically set by parameters in the `.dev-lib` file. 
 
-Export:
+## PHPCBF
 
 ```
-bin/mysql-export 
+bin/phpcbf {path}
 ```
 
-Running the `bin/mysql-export` bash script will create a backup of the database inside the `mysql/backups` directory with the format `{db-name}-{timestamp}.sql`
+To automatically fix as many sniff violations as possible, use the `phpcbf` command in place of the `phpcs` command. The `bin/phpcbf` bash script is a wrapper for `phpcbf` inside Docker with the parameters already supplied. The script requires/accepts an absolute (docker) or relative (host) path to a directory or file. Configurations are automatically set by parameters in the `.dev-lib` file. 
+
 
 ## Run WP-CLI Commands
 
