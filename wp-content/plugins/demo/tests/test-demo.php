@@ -14,10 +14,10 @@ namespace Demo;
  */
 class Test_Demo extends \WP_UnitTestCase {
 
-    /**
-     * Test PHPUnit is connected.
-     */
-    public function test_demo() {
-        $this->assertTrue( true );
-    }
+	/**
+	 * Test PHPUnit is connected.
+	 */
+	public function test_demo() {
+		$this->assertTrue( true );
+	}
 }

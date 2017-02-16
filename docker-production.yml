@@ -1,5 +1,12 @@
 version: '3'
+
 services:
+    mysql:
+        restart: on-failure
+
+    redis:
+        restart: on-failure
+
     php:
         restart: on-failure
         environment:
@@ -9,9 +16,3 @@ services:
         restart: on-failure
         ports:
             - 8000:80
-
-    mysql:
-        restart: on-failure
-
-    memcached:
-        restart: on-failure

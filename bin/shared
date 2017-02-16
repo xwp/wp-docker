@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function sniffs {
+    if [ -z "$2" ]; then
+        echo "Waring: The file path is a required parameter"
+    else
+        COMMAND="phpcs"
+        if [ $1 = 'phpcbf' ]; then
+            COMMAND="phpcbf --no-patch"
+        fi
+
+        if [[ $2 != *"/var/www/html/"* ]]; then
+            FILE_PATH="/var/www/html/$2"
+        else
+            FILE_PATH="$2"
+        fi
+
+        # Get the phpcs vars
+        while IFS= read -r line
+        do
+            export $(echo -e "$line" | sed -e 's/[[:space:]]*$//' -e "s/'//g")
+        done < <(cat .dev-lib | grep PHPCS_)
+
+        while IFS= read -r line
+        do
+            export $(echo -e "$line" | sed -e 's/[[:space:]]*$//' -e "s/'//g")
+        done < <(cat .dev-lib | grep WPCS_)
+
+        docker-compose run --rm php ${COMMAND} --ignore=${PHPCS_IGNORE} --standard=${WPCS_STANDARD} ${FILE_PATH}
+    fi
+}
