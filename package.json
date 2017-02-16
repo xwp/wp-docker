@@ -1,7 +1,7 @@
 {
   "name": "wp-docker",
   "version": "1.0.0",
-  "description": "A docker environment for WordPress development.",
+  "description": "A docker environment for WordPress site development.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xwp/wp-docker.git"
