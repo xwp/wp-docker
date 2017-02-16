@@ -126,7 +126,7 @@ bin/plugin "Hello World"
 
 This will create a plugin `hello-world` in the `wp-content/plugins` directory and will greatly speed up plugin development inside this repo.
 
-Be sure to add your new plugin to the `testsuite` inside the [`wp-tests/phpunit.xml.dist`](wp-tests/phpunit.xml.dist) file to ensure your PHPUnit tests are included in the `pre-commit` hook and `bin/phpunit` script.
+Be sure to add your new plugin to the `testsuite` inside the [`wp-tests/phpunit.xml.dist`](wp-tests/phpunit.xml.dist) file to ensure your PHPUnit tests are included in the `pre-commit` hook and `bin/phpunit` script. It is required that you run this script from this repositories root directory.
 
 ## Deploying
 
@@ -145,7 +145,7 @@ php:
 
 #### Can I force SSL in wp-admin?
 
-Yes! Add the following to the php section in `docker-custom.yml`
+Yes! Add the following to the php service  in `docker-custom.yml`
 
 ```
 php:
