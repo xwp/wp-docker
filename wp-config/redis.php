@@ -1,4 +1,9 @@
 <?php
+/**
+ * Add Redis configs.
+ *
+ * @package WP_Docker
+ */
 
 define( 'WP_CACHE', true );
 

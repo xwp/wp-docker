@@ -1,6 +1,11 @@
 <?php
+/**
+ * Base configs.
+ *
+ * @package WP_Docker
+ */
 
-foreach( glob( '/var/www/html/wp-config/*.php' ) as $config ) {
+foreach ( glob( '/var/www/html/wp-config/*.php' ) as $config ) {
 	if ( 'wp-config.php' === basename( $config ) ) {
 		continue;
 	}
@@ -14,11 +19,10 @@ define( 'DB_HOST', $_ENV['WP_DB_HOST'] );
 
 $table_prefix = 'wp_';
 
-# content directory
+// Content directory.
 define( 'WP_CONTENT_DIR', '/var/www/html/wp-content' );
 
-/* That's all, stop editing! Happy blogging. */
-
+// That's all, stop editing! Happy blogging.
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __FILE__ ) . '/' );
 }

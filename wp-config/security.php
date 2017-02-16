@@ -1,4 +1,9 @@
 <?php
+/**
+ * Add security configs.
+ *
+ * @package WP_Docker
+ */
 
 define( 'DISALLOW_FILE_EDIT', true );
 
