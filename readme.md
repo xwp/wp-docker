@@ -37,12 +37,12 @@ docker-compose down
 
 ## MySQL
 
-Docker will execute files with extensions `.sh`, `.sql` and `.sql.gz` that are found in the `mysql` directory. Files will be executed in alphabetical order. You can easily populate your mariadb services by [mounting a SQL dump into that directory](https://docs.docker.com/engine/tutorials/dockervolumes/#mount-a-host-file-as-a-data-volume) and provide [custom images](https://docs.docker.com/reference/builder/) with contributed data. SQL files will be imported by default to the database specified by the `MYSQL_DATABASE` variable. However, it may not be the ideal workflow to load the DB this way so there are additional custom import and export capabilities.
+Docker will execute files with extensions `.sh`, `.sql` and `.sql.gz` that are found in the `mysql` directory. Files will be executed in alphabetical order. You can easily populate your mariadb service by [mounting a SQL dump into that directory](https://docs.docker.com/engine/tutorials/dockervolumes/#mount-a-host-file-as-a-data-volume) and provide [custom images](https://docs.docker.com/reference/builder/) with contributed data. SQL files will be imported by default to the database specified by the `MYSQL_DATABASE` variable. However, it may not be the ideal workflow to load the DB this way so there are additional custom import and export capabilities.
 
 Import:
 
 ```
-bin/mysql-import {path-to-sql-file} 
+bin/mysql-import {path-to-file}.sql
 ```
 
 Running the `bin/mysql-import` bash script will import an SQL file into the database which is defined in the `MYSQL_DATABASE` environment variable. All you need to do is supply a path to the SQL file.
@@ -100,7 +100,7 @@ To automatically fix as many sniff violations as possible, use the `phpcbf` comm
 bin/run {command}
 ```
 
-The `bin/run` bash script is a wrapper the follow `docker-compose` script. This is essential to interacting with the `php` service and its linked services.
+The `bin/run` bash script is a wrapper for the following `docker-compose` script. This is essential to interacting with the `php` service and its linked services. You can quicky run commands even when the Docker container is not `up`.
 
 1. `docker-compose run --rm php <command>`
 
