@@ -14,7 +14,13 @@ A docker environment for WordPress site development.
 Start:
 
 ```
-bin/up
+bin/up {optional:parameters}
+```
+
+The optional parameters give you the ability to append configurations to the script. However, the `bin/up` script by default adds the `--build` parameter if nothing is passed to it. For example, you could run Docker in daemon mode by adding `-d` and that would be the only parameter. So if you want the default behaviour plus daemon mode you would do:
+
+```
+bin/up --build -d
 ```
 
 Although it's not recommended, you can alternatively use:

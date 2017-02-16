@@ -1,13 +1,18 @@
 #!/bin/bash
 
+PARAMS=""
+if [ -z "$*" ]; then
+    PARAMS="--build"
+fi
+
 # Build containers
 echo
 echo "Building containers..."
 docker-compose pull
 if [ -e "docker-custom.yml" ]; then
-	docker-compose -f docker-compose.yml -f docker-custom.yml up --build
+	docker-compose -f docker-compose.yml -f docker-custom.yml up ${PARAMS} $@
 else
-    docker-compose up --build
+    docker-compose up ${PARAMS} $@
 fi
 
 echo
