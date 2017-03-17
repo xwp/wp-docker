@@ -14,6 +14,7 @@ wp-tests/coverage
 docker-custom.yml
 
 # Composer
+wp-content/composer.lock
 wp-content/plugins/wp-redis
 wp-content/plugins/query-monitor
 wp-content/db.php
