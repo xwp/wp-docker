@@ -1,5 +1,7 @@
 # WP Docker (Beta)
 
+[![Build Status](https://travis-ci.org/xwp/wp-docker.svg?branch=master)](https://travis-ci.org/xwp/wp-docker)
+
 A docker environment for WordPress site development.
 
 ## Requirements
