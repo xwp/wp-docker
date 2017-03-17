@@ -2,7 +2,7 @@ version: '3'
 
 services:
     mysql:
-        image: mariadb
+        image: mariadb:10.1.21
         ports:
             - 3306:3306
         volumes:
@@ -15,14 +15,14 @@ services:
             MYSQL_PASSWORD: wordpress # Must match WP_DB_PASSWORD
 
     redis:
-        image: redis
+        image: redis:3.2.8-alpine
         ports:
             - 6379:6379
         volumes:
             - redis:/data
 
     php:
-        build: .
+        build: ./php
         links:
             - mysql
             - redis
@@ -42,14 +42,15 @@ services:
             WP_ADMIN_USER: wordpress
             WP_ADMIN_PASSWORD: wordpress
             WP_ADMIN_EMAIL: dev@wp.local
-            WP_VERSION: 4.7.2
+            WP_VERSION: 4.7.3
             WP_TITLE: "WP Docker"
             WP_GIT_URL: git://develop.git.wordpress.org/
+            WP_DEBUG: 1
             XDEBUG_CONFIG: remote_host=127.0.0.1
             PHP_IDE_CONFIG: serverName=wp.local
 
     nginx:
-        image: nginx
+        image: nginx:1.11.10-alpine
         volumes:
             - ./wordpress:/var/www/html/wordpress:ro
             - ./wp-content:/var/www/html/wp-content:ro

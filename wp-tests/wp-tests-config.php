@@ -23,11 +23,7 @@ define( 'WP_DEBUG', true );
 // These tests will DROP ALL TABLES in the database with the prefix named below.
 // DO NOT use a production database or one that is shared with something else.
 
-if ( $_ENV['WP_DB_HOST'] ) {
-	define( 'DB_HOST', $_ENV['WP_DB_HOST'] );
-} else {
-	define( 'DB_HOST', 'mysql' );
-}
+define( 'DB_HOST', 'mysql' );
 define( 'DB_NAME', 'wptests' );
 define( 'DB_USER', 'wptests' );
 define( 'DB_PASSWORD', 'wptests' );
