@@ -22,7 +22,7 @@ services:
             - redis:/data
 
     php:
-        build: ./php
+        image: xwpco/wordpress-alpine
         links:
             - mysql
             - redis

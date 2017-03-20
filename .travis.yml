@@ -1,5 +1,8 @@
 sudo: true
 
+services:
+    - docker
+
 language:
     - php
 
@@ -17,6 +20,7 @@ before_install:
     - echo "WP_VERSION=4.7.3"
 
 install:
+    - bin/up
     - export DEV_LIB_PATH=dev-lib
     - if [ ! -e "$DEV_LIB_PATH" ] && [ -L .travis.yml ]; then export DEV_LIB_PATH=$( dirname $( readlink .travis.yml ) ); fi
     - if [ ! -e "$DEV_LIB_PATH" ]; then git clone -b feature/docker https://github.com/xwp/wp-dev-lib.git $DEV_LIB_PATH; fi
