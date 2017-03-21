@@ -22,7 +22,14 @@ if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
 }
 require_once $_tests_dir . '/includes/functions.php';
 
-foreach ( glob( getcwd() . '/../wp-content/plugins/*' ) as $_plugin_candidate ) {
+// Setup the plugins.
+if ( '/tmp/wordpress/tests/phpunit' === $_tests_dir ) {
+	$_plugins_array = glob( getcwd() . '/wp-content/plugins/*' );
+} else {
+	$_plugins_array = glob( getcwd() . '/../wp-content/plugins/*' );
+}
+
+foreach ( $_plugins_array as $_plugin_candidate ) {
 	if ( is_dir( $_plugin_candidate ) && 'akismet' !== basename( $_plugin_candidate ) ) {
 		foreach ( glob( $_plugin_candidate . '/*.php' ) as $_plugin_file_candidate ) {
 			if ( basename( $_plugin_candidate ) !== basename( $_plugin_file_candidate, '.php' ) ) {

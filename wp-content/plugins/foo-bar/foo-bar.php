@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Foo Bar
  * Plugin URI: https://github.com/xwp/wp-foo-bar
- * Description: ...
+ * Description: Foo Bar is a built-in template plugin for scaffolding WordPress plugins.
  * Version: 0.1
  * Author:  XWP
  * Author URI: https://xwp.co/
@@ -11,7 +11,7 @@
  * Text Domain: foo-bar
  * Domain Path: /languages
  *
- * Copyright (c) 2016 XWP (https://xwp.co/)
+ * Copyright (c) 2017 XWP (https://xwp.co/)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2 or, at

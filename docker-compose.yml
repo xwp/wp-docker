@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 
 services:
     mysql:
@@ -22,7 +22,7 @@ services:
             - redis:/data
 
     php:
-        build: ./php
+        image: xwpco/wordpress-alpine
         links:
             - mysql
             - redis

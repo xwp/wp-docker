@@ -4,7 +4,7 @@ Foo Bar is a built-in template plugin for scaffolding WordPress plugins.
 
 **Contributors:** [xwp](https://profiles.wordpress.org/xwp)  
 **Requires at least:** 4.4  
-**Tested up to:** 4.7.2  
+**Tested up to:** 4.7.3  
 **Stable tag:** trunk (master)  
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
