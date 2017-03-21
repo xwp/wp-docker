@@ -22,14 +22,14 @@ if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
 }
 require_once $_tests_dir . '/includes/functions.php';
 
-// @codingStandardsIgnoreStart
-echo getcwd();
-echo "\n";
-echo $_tests_dir;
-echo "\n";
-// @codingStandardsIgnoreEnd
+// Setup the plugins.
+if ( '' === getenv( 'TRAVIS_BUILD_DIR' ) ) {
+	$_plugins_array = glob( getcwd() . '/wp-content/plugins/*' );
+} else {
+	$_plugins_array = glob( getcwd() . '/../wp-content/plugins/*' );
+}
 
-foreach ( glob( getcwd() . '/../wp-content/plugins/*' ) as $_plugin_candidate ) {
+foreach ( $_plugins_array as $_plugin_candidate ) {
 	if ( is_dir( $_plugin_candidate ) && 'akismet' !== basename( $_plugin_candidate ) ) {
 		foreach ( glob( $_plugin_candidate . '/*.php' ) as $_plugin_file_candidate ) {
 			if ( basename( $_plugin_candidate ) !== basename( $_plugin_file_candidate, '.php' ) ) {
