@@ -1,6 +1,6 @@
 # WP Docker (Beta)
 
-[![Build Status](https://travis-ci.org/xwp/wp-docker.svg?branch=master)](https://travis-ci.org/xwp/wp-docker)
+[![Build Status](https://travis-ci.org/xwp/wp-docker.svg?branch=master)](https://travis-ci.org/xwp/wp-docker) [![Coverage Status](https://coveralls.io/repos/github/xwp/wp-docker/badge.svg?branch=master)](https://coveralls.io/github/xwp/wp-docker?branch=master)
 
 A docker environment for WordPress site development.
 
