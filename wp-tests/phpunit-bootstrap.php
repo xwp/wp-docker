@@ -22,7 +22,7 @@ if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
 }
 require_once $_tests_dir . '/includes/functions.php';
 
-// Setup the plugins.
+// Setup the plugins array.
 if ( '/tmp/wordpress/tests/phpunit' === $_tests_dir ) {
 	$_plugins_array = glob( getcwd() . '/wp-content/plugins/*' );
 } else {
