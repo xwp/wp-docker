@@ -22,12 +22,8 @@ if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
 }
 require_once $_tests_dir . '/includes/functions.php';
 
-// @codingStandardsIgnoreStart
-echo $_tests_dir;
-// @codingStandardsIgnoreEnd
-
 // Setup the plugins.
-if ( '/tmp/wordpress-tests' === $_tests_dir ) {
+if ( '/tmp/wordpress/tests/phpunit' === $_tests_dir ) {
 	$_plugins_array = glob( getcwd() . '/wp-content/plugins/*' );
 	// @codingStandardsIgnoreStart
 	echo getcwd() . '/wp-content/plugins/*';
