@@ -1,6 +1,5 @@
 PROJECT_TYPE=site
 PHPCS_IGNORE='node_modules/*,wordpress/*'
 PHPUNIT_CONFIG='/var/www/html/wp-tests/phpunit.xml.dist'
-TRAVIS_PHPUNIT_CONFIG='/wp-tests/phpunit.xml.dist'
 WPCS_STANDARD=WordPress-Core,WordPress-Extra,WordPress-Docs,WordPress-VIP
 PHPCS_IGNORE='/node_modules/*,/div-lib/*,/vendor/*,/mu-plugins/*,advanced-cache.php,db.php,/query-monitor/*,/wp-redis/*,/twentyseventeen/*'
