@@ -22,6 +22,11 @@ if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
 }
 require_once $_tests_dir . '/includes/functions.php';
 
+echo getcwd();
+echo "\n";
+echo $_tests_dir;
+echo "\n";
+
 foreach ( glob( getcwd() . '/../wp-content/plugins/*' ) as $_plugin_candidate ) {
 	if ( is_dir( $_plugin_candidate ) && 'akismet' !== basename( $_plugin_candidate ) ) {
 		foreach ( glob( $_plugin_candidate . '/*.php' ) as $_plugin_file_candidate ) {
