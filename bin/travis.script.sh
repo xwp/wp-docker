@@ -7,6 +7,8 @@ do
     export $(echo -e "$line" | sed -e 's/[[:space:]]*$//')
 done < <(docker-compose run --rm php env | grep WP_DB_)
 
+docker-compose run --rm php /usr/local/bin/install-wp
+
 function is_db_up() {
     RESULT=`mysql \
         -h ${WP_DB_HOST%:*} \
