@@ -22,13 +22,14 @@ if ( ! file_exists( $_tests_dir . '/includes/' ) ) {
 }
 require_once $_tests_dir . '/includes/functions.php';
 
-// @codingStandardsIgnoreStart
-echo getcwd() . '/wp-content/plugins/*';
-// @codingStandardsIgnoreEnd
+
 
 // Setup the plugins.
 if ( '' === getenv( 'TRAVIS_BUILD_DIR' ) ) {
 	$_plugins_array = glob( getcwd() . '/wp-content/plugins/*' );
+	// @codingStandardsIgnoreStart
+	echo getcwd() . '/wp-content/plugins/*';
+// @codingStandardsIgnoreEnd
 } else {
 	$_plugins_array = glob( getcwd() . '/../wp-content/plugins/*' );
 }
