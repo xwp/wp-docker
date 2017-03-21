@@ -25,6 +25,9 @@ require_once $_tests_dir . '/includes/functions.php';
 // Setup the plugins.
 if ( '/tmp/wordpress-tests' === $_tests_dir ) {
 	$_plugins_array = glob( getcwd() . '/wp-content/plugins/*' );
+	// @codingStandardsIgnoreStart
+	echo getcwd() . '/wp-content/plugins/*';
+	// @codingStandardsIgnoreEnd
 } else {
 	$_plugins_array = glob( getcwd() . '/../wp-content/plugins/*' );
 }
