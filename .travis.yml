@@ -16,6 +16,9 @@ env:
     global:
         - WP_MULTISITE=0
 
+before_script:
+    - sudo /etc/init.d/mysql stop
+
 before_install:
     - echo "WP_VERSION=4.7.3"
 
