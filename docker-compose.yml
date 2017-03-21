@@ -37,14 +37,12 @@ services:
             WP_DB_USER: wordpress # Must match MYSQL_USER
             WP_DB_PASSWORD: wordpress # Must match MYSQL_PASSWORD
             WP_THEME_NAME: twentyseventeen
-            WP_THEME_CLI: 1
             WP_DOMAIN: wp.local
             WP_ADMIN_USER: wordpress
             WP_ADMIN_PASSWORD: wordpress
             WP_ADMIN_EMAIL: dev@wp.local
             WP_VERSION: 4.7.3
             WP_TITLE: "WP Docker"
-            WP_GIT_URL: git://develop.git.wordpress.org/
             WP_DEBUG: 1
             XDEBUG_CONFIG: remote_host=127.0.0.1
             PHP_IDE_CONFIG: serverName=wp.local

@@ -10,8 +10,15 @@ A docker environment for WordPress site development.
 * svn
 * docker
 * docker-compose
+* composer
+* npm
 
 ## Usage
+
+Install Plugins:
+```
+composer install
+```
 
 Start:
 
