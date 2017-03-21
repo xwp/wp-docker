@@ -1,4 +1,4 @@
-sudo: true
+sudo: required
 
 services:
     - docker
@@ -28,3 +28,4 @@ script:
 
 after_script:
     - source $DEV_LIB_PATH/travis.after_script.sh
+    - bin/down
