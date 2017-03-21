@@ -21,7 +21,7 @@ before_install:
     - echo "WP_VERSION=4.7.3"
 
 install:
-    - bin/up -d
+    - bin/up --build -d
 
 script:
     - source bin/travis.script.sh

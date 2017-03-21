@@ -25,7 +25,7 @@ function is_db_up() {
 }
 
 until is_db_up; do
-   echo "Waiting for the ${WP_DB_NAME} database to become available..."
+   echo "Waiting for database to become available..."
    sleep 5
 done
 
