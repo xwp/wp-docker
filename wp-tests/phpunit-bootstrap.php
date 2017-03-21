@@ -5,9 +5,10 @@ define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . 'plugins/' );
 global $_plugin_files;
 $_plugin_files = array();
 
+// Travis CI tests directory.
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
-// Travis CI tests directory.
+// Dev lib tests directory.
 if ( empty( $_tests_dir ) ) {
 	$_tests_dir = '/tmp/wordpress-tests';
 }

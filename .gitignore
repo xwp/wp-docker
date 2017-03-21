@@ -16,11 +16,9 @@ docker-custom.yml
 # Composer
 composer.lock
 vendor
-wp-content/composer.lock
 wp-content/plugins/wp-redis
 wp-content/plugins/query-monitor
 wp-content/db.php
-wp-content/vendor
 
 # Development
 .idea

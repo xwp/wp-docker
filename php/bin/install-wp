@@ -18,39 +18,23 @@ uniqueEnvs=(
     NONCE_SALT
 )
 envs=(
+    MYSQL_DATABASE
+    MYSQL_USER
+    MYSQL_PASSWORD
     WP_DB_HOST
     WP_DB_USER
     WP_DB_PASSWORD
     WP_DB_NAME
-    "${uniqueEnvs[@]/#/WP_}"
     WP_TABLE_PREFIX
     WP_DEBUG
-    WP_THEME_CLI
     WP_DOMAIN
     WP_TITLE
     WP_ADMIN_USER
     WP_ADMIN_PASSWORD
     WP_ADMIN_EMAIL
     WP_VERSION
-    WP_GIT_URL
+    "${uniqueEnvs[@]/#/WP_}"
 )
-
-function is_active_theme() {
-    RESULT=`wp theme list \
-        --status=active \
-        --fields=name \
-        --format=csv \
-        --allow-root \
-        --path=${WP_CORE_DIR} \
-        | tail -1 \
-        2>/dev/null`
-
-    if [ "$RESULT" != "${WP_THEME_NAME}" ]; then
-        return 0
-    else
-        return 1
-    fi
-}
 
 function is_db_up() {
     RESULT=`mysql \
@@ -102,7 +86,7 @@ foreach ( glob( '/var/www/html/wp-config/*.php' ) as $config ) {
 }
 
 // Set the content directory.
-define( 'WP_CONTENT_DIR', '/var/www/html/wp-content' );
+define( 'WP_CONTENT_DIR', "${WP_CONTENT_DIR}" );
 
 EOPHP
     chown www-data:www-data wp-config.php
@@ -157,7 +141,6 @@ if [ "$WP_DEBUG" ]; then
     set_config 'WP_DEBUG' 1 boolean
 fi
 
-
 # Install Core
 if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
     echo
@@ -173,57 +156,9 @@ if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
         --skip-email
 fi
 
-# Ensure the plugin and theme directories exist
-mkdir -p ${WP_CONTENT_DIR}/themes
-mkdir -p ${WP_CONTENT_DIR}/plugins
-
-# Checkout/update default theme
-echo
-if [ ! ${WP_THEME_NAME} ]; then
-    echo "You must add the 'WP_THEME_NAME' environment variable to Docker's php services..."
-else
-    if [ ${WP_THEME_GIT_URL} ]; then
-        if [ -d ${WP_THEME_DIR} ]; then
-            echo "Updating theme..."
-            git -C ${WP_THEME_DIR} pull
-        else
-            echo "Cloning theme..."
-            git clone ${WP_THEME_GIT_URL} ${WP_THEME_DIR}
-        fi
-    elif [ ${WP_THEME_SVN_URL} ]; then
-        if [ -d ${WP_THEME_DIR} ]; then
-            echo "Updating theme..."
-            svn up ${WP_THEME_DIR}
-        else
-            echo "Checking out theme..."
-            svn co ${WP_THEME_SVN_URL} ${WP_THEME_DIR}
-        fi
-    elif [ ${WP_THEME_ZIP_URL} ]; then
-        wp theme install ${WP_THEME_ZIP_URL} --allow-root
-    elif [ ${WP_THEME_CLI} ]; then
-        wp theme install ${WP_THEME_NAME} --allow-root
-    elif [ ! -d ${WP_THEME_DIR} ]; then
-        echo "Could not install theme..."
-    fi
-    if [ ! is_active_theme ]; then
-        wp theme activate ${WP_THEME_NAME} --allow-root
-    fi
-fi
-
-echo
-echo "Installing Plugins..."
-
-cd ${WP_CONTENT_DIR}
-composer install
-cd - >/dev/null
-
-echo
-echo "Activating Plugins..."
-
-wp plugin activate \
-	query-monitor \
-	wp-redis \
-	--allow-root
+# Checking out the default theme
+echo "Checking out default theme..."
+wp theme install twentyseventeen --allow-root
 
 # Generate the tests SVN tag
 if [[ ${WP_VERSION} =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
@@ -252,8 +187,13 @@ if [ ! -d $WP_TESTS_DIR ]; then
 fi
 
 echo "Updating WordPress Test Suite..."
+
 svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
 svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+
+if [ -e "${WP_CONTENT_DIR}/install.sh" ]; then
+    source "${WP_CONTENT_DIR}/install.sh"
+fi
 
 echo
 echo "Done!"
