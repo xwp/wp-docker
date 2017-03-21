@@ -5,7 +5,7 @@ set -e
 while IFS= read -r line
 do
     export $(echo -e "$line" | sed -e 's/[[:space:]]*$//')
-done < <(docker-compose run --rm php env | grep WP_DB_)
+done < <(docker-compose run --rm php env | grep WP_)
 
 docker-compose run --rm php /usr/local/bin/install-wp
 
