@@ -1,9 +1,8 @@
 #!/bin/bash
 
-WP_CORE_DIR="/var/www/html/wordpress"
-WP_CONTENT_DIR="/var/www/html/wp-content"
-WP_TESTS_DIR="/var/www/html/wp-tests"
-WP_THEME_DIR="${WP_CONTENT_DIR}/themes/${WP_THEME_NAME}"
+export WP_CORE_DIR="/var/www/html/wordpress"
+export WP_CONTENT_DIR="/var/www/html/wp-content"
+export WP_TESTS_DIR="/var/www/html/wp-tests"
 
 # allow any of these "Authentication Unique Keys and Salts." to be specified via
 # environment variables with a "WP_" prefix (ie, "WP_AUTH_KEY")
@@ -86,7 +85,7 @@ foreach ( glob( '/var/www/html/wp-config/*.php' ) as $config ) {
 }
 
 // Set the content directory.
-define( 'WP_CONTENT_DIR', "${WP_CONTENT_DIR}" );
+define( 'WP_CONTENT_DIR', "/var/www/html/wp-content" );
 
 EOPHP
     chown www-data:www-data wp-config.php
@@ -156,10 +155,6 @@ if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
         --skip-email
 fi
 
-# Checking out the default theme
-echo "Checking out default theme..."
-wp theme install twentyseventeen --allow-root
-
 # Generate the tests SVN tag
 if [[ ${WP_VERSION} =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
 	WP_TESTS_TAG="tags/${WP_VERSION}"
@@ -190,6 +185,10 @@ echo "Updating WordPress Test Suite..."
 
 svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
 svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+
+# Ensure the plugin and theme directories exist
+mkdir -p ${WP_CONTENT_DIR}/themes
+mkdir -p ${WP_CONTENT_DIR}/plugins
 
 if [ -e "${WP_CONTENT_DIR}/install.sh" ]; then
     source "${WP_CONTENT_DIR}/install.sh"
