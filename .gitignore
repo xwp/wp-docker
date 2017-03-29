@@ -11,9 +11,9 @@ wp-tests/includes
 wp-tests/coverage
 
 # Docker
+data/*
+logs/*
 .env
-data/mysql
-data/redis
 docker-custom.yml
 
 # Composer
