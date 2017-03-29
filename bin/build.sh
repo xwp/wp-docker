@@ -1,5 +1,29 @@
 #!/bin/bash
 
+USAGE="[--help|-h] [--with-tests|-t] [--deploy|-d]"
+
+## Process cli params
+for p in "$@";
+do
+    case $p in
+    --help|-h)
+        echo "Usage: $0 ${USAGE}"
+        exit 2;
+        ;;
+    --with-tests|-t)
+        TASK="tests"
+        ;;
+    --deploy|-d)
+        TASK="deploy"
+        ;;
+    *)
+        echo "Invalid parameter ${p}"
+        echo "Usage: $0 ${USAGE}"
+        exit 2;
+        ;;
+    esac
+done
+
 export WP_CORE_DIR="/var/www/html/wordpress"
 export WP_CONTENT_DIR="/var/www/html/wp-content"
 export WP_TESTS_DIR="/var/www/html/wp-tests"
@@ -155,36 +179,39 @@ if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
         --skip-email
 fi
 
-# Generate the tests SVN tag
-if [[ ${WP_VERSION} =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
-	WP_TESTS_TAG="tags/${WP_VERSION}"
-elif [[ ${WP_VERSION} == 'nightly' || ${WP_VERSION} == 'trunk' ]]; then
-	WP_TESTS_TAG="trunk"
-else
-	# http serves a single offer, whereas https serves multiple. we only want one
-	download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
-	grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
-	LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
-	if [[ -z "$LATEST_VERSION" ]]; then
-		echo "Latest WordPress version could not be found"
-		exit 1
-	fi
-	WP_TESTS_TAG="tags/$LATEST_VERSION"
+if [ "${TASK}" == "tests" ]; then
+
+    # Generate the tests SVN tag
+    if [[ ${WP_VERSION} =~ [0-9]+\.[0-9]+(\.[0-9]+)? ]]; then
+        WP_TESTS_TAG="tags/${WP_VERSION}"
+    elif [[ ${WP_VERSION} == 'nightly' || ${WP_VERSION} == 'trunk' ]]; then
+        WP_TESTS_TAG="trunk"
+    else
+        # http serves a single offer, whereas https serves multiple. we only want one
+        download http://api.wordpress.org/core/version-check/1.7/ /tmp/wp-latest.json
+        grep '[0-9]+\.[0-9]+(\.[0-9]+)?' /tmp/wp-latest.json
+        LATEST_VERSION=$(grep -o '"version":"[^"]*' /tmp/wp-latest.json | sed 's/"version":"//')
+        if [[ -z "$LATEST_VERSION" ]]; then
+            echo "Latest WordPress version could not be found"
+            exit 1
+        fi
+        WP_TESTS_TAG="tags/$LATEST_VERSION"
+    fi
+
+    # Set up testing suite if it doesn't yet exist
+    echo
+    if [ ! -d $WP_TESTS_DIR ]; then
+        echo "Creating WordPress Test Suite Directory..."
+
+        # set up testing suite
+        mkdir -p $WP_TESTS_DIR
+    fi
+
+    echo "Updating WordPress Test Suite..."
+
+    svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
+    svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
 fi
-
-# Set up testing suite if it doesn't yet exist
-echo
-if [ ! -d $WP_TESTS_DIR ]; then
-    echo "Creating WordPress Test Suite Directory..."
-
-    # set up testing suite
-    mkdir -p $WP_TESTS_DIR
-fi
-
-echo "Updating WordPress Test Suite..."
-
-svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
 
 # Ensure the plugin and theme directories exist
 mkdir -p ${WP_CONTENT_DIR}/themes
