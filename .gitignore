@@ -11,6 +11,9 @@ wp-tests/includes
 wp-tests/coverage
 
 # Docker
+.env
+data/mysql
+data/redis
 docker-custom.yml
 
 # Composer
@@ -26,5 +29,5 @@ node_modules
 .DS_Store
 
 # DB Migrations
-mysql
-!mysql/wptests.sql
+config/mysql
+!config/mysql/wptests.sql
