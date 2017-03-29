@@ -3,7 +3,7 @@ version: '2'
 services:
 
     data:
-        image: xwpco/data:1.0-alpine
+        image: tianon/true
         restart: on-failure
         volumes:
             - ./wordpress:/var/www/html/wordpress
