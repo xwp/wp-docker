@@ -29,5 +29,5 @@ node_modules
 .DS_Store
 
 # DB Migrations
-config/mysql
+config/mysql/*
 !config/mysql/wptests.sql
