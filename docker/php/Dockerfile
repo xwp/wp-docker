@@ -110,8 +110,6 @@ RUN curl -o /usr/local/bin/phpcs -SL https://squizlabs.github.io/PHP_CodeSniffer
 RUN curl -o /usr/local/bin/phpcbf -SL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar \
     && chmod +x /usr/local/bin/phpcbf
 
-COPY conf.d/wordpress.ini /usr/local/etc/php/conf.d/wordpress.ini
-
 WORKDIR /var/www/html/wordpress/
 
 CMD ["php-fpm"]
