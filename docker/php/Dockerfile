@@ -1,49 +1,44 @@
-FROM php:7.1.1-fpm-alpine
+FROM php:7.1-fpm-alpine
 
-ENV PHPREDIS_VERSION 3.1.1
+ENV PHPREDIS_VERSION 3.1.2
 
 RUN apk add --no-cache --virtual .build-deps \
-        autoconf \
-        file \
-        gcc \
-        g++ \
-        make \
-        pkgconf \
-        libc-dev \
-        zip \
+        $PHPIZE_DEPS \
         curl \
         curl-dev \
         freetype-dev \
         icu \
         icu-dev \
-        libmcrypt-dev \
-        libxml2-dev \
         libintl \
         libjpeg-turbo-dev \
+        libmcrypt-dev \
         libpng-dev \
-        postgresql-dev \
-    && apk add --no-cache \
+        libxml2-dev \
+
+    && apk add --no-cache --virtual .persistent-deps \
         bash \
         grep \
         sed \
         git \
-        subversion \
         mariadb-client \
+        subversion \
+
     && docker-php-ext-configure gd \
         --with-png-dir=/usr \
         --with-jpeg-dir=/usr \
+
     && docker-php-ext-install \
-        gd \
-        mysqli \
-        opcache \
-        mcrypt \
-        zip \
-        curl \
         bcmath \
+        curl \
         exif \
+        gd \
         iconv \
         intl \
         mbstring \
+        mcrypt \
+        mysqli \
+        opcache \
+        zip \
 
     && { \
         echo 'opcache.memory_consumption=128'; \
@@ -98,9 +93,6 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN curl -o /usr/local/bin/wp -SL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar \
     && chmod +x /usr/local/bin/wp
 
-# Install composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
-
 # Install PHPUnit
 RUN curl https://phar.phpunit.de/phpunit-5.7.5.phar -L -o phpunit.phar \
     && chmod +x phpunit.phar \
@@ -119,8 +111,7 @@ RUN curl -o /usr/local/bin/phpcbf -SL https://squizlabs.github.io/PHP_CodeSniffe
     && chmod +x /usr/local/bin/phpcbf
 
 COPY conf.d/wordpress.ini /usr/local/etc/php/conf.d/wordpress.ini
+
 WORKDIR /var/www/html/wordpress/
 
-# Install WordPress
-COPY bin/install-wp /usr/local/bin/install-wp
-CMD /usr/local/bin/install-wp
+CMD ["php-fpm"]

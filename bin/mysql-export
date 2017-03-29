@@ -7,11 +7,11 @@ do
     export $(echo -e "$line" | sed -e 's/[[:space:]]*$//')
 done < <(docker-compose run --rm php env | grep WP_DB_)
 
-mkdir -p mysql/backups
+mkdir -p config/mysql/backups
 
 echo
 echo "Exporting the '${WP_DB_NAME}' database..."
-echo "Generating mysql/backups/${WP_DB_NAME}-${TIMESTAMP}.sql..."
+echo "Generating config/mysql/backups/${WP_DB_NAME}-${TIMESTAMP}.sql..."
 
 docker-compose run --rm php mysqldump --opt \
     -h ${WP_DB_HOST%:*} \
@@ -19,7 +19,7 @@ docker-compose run --rm php mysqldump --opt \
     -u ${WP_DB_USER} \
     -p${WP_DB_PASSWORD} \
     ${WP_DB_NAME} \
-    > mysql/backups/${WP_DB_NAME}-${TIMESTAMP}.sql
+    > config/mysql/backups/${WP_DB_NAME}-${TIMESTAMP}.sql
 
 echo "Done!"
 echo
