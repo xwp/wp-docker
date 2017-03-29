@@ -20,6 +20,12 @@ Install Plugins:
 composer install
 ```
 
+Add Environment Variables:
+```
+cp .env.sample .env
+```
+This creates a new `.env` file from the `.env.sample` file and  is not checked into `git`, change the settings as needed.
+
 Start:
 
 ```
