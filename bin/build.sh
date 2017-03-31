@@ -59,6 +59,23 @@ envs=(
     "${uniqueEnvs[@]/#/WP_}"
 )
 
+function is_active_theme() {
+    RESULT=`wp theme list \
+        --status=active \
+        --fields=name \
+        --format=csv \
+        --allow-root \
+        --path=${WP_CORE_DIR} \
+        | tail -1 \
+        2>/dev/null`
+
+    if [ "$RESULT" != "${WP_THEME_NAME}" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function is_db_up() {
     RESULT=`mysql \
         -h ${WP_DB_HOST%:*} \
@@ -217,9 +234,21 @@ fi
 mkdir -p ${WP_CONTENT_DIR}/themes
 mkdir -p ${WP_CONTENT_DIR}/plugins
 
-if [ -e "${WP_CONTENT_DIR}/install.sh" ]; then
-    source "${WP_CONTENT_DIR}/install.sh"
+# Checking out the default theme
+echo "Checking out default theme..."
+wp theme install ${WP_THEME_NAME} --allow-root
+
+if [ ! is_active_theme ]; then
+    wp theme activate ${WP_THEME_NAME} --allow-root
 fi
+
+echo
+echo "Activating Plugins..."
+
+wp plugin activate \
+	query-monitor \
+	wp-redis \
+	--allow-root
 
 echo
 echo "Done!"
