@@ -178,12 +178,5 @@ class Test_Doc_Hooks_Alt extends Plugin_Base {
 	 * @action init
 	 */
 	public function init_action() {}
-
-	/**
-	 * Plugin_Base destructor.
-	 */
-	function __destruct() {
-		parent::__destruct();
-	}
 }
 
