@@ -23,6 +23,7 @@ class Test_Foo_Bar extends \WP_UnitTestCase {
 		ob_start();
 		_foo_bar_php_version_error();
 		$buffer = ob_get_clean();
+
 		$this->assertContains( '<div class="error">', $buffer );
 	}
 

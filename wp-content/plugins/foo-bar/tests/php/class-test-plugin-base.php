@@ -32,12 +32,28 @@ class Test_Plugin_Base extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Test autoload.
+	 *
+	 * @see Plugin_Base::autoload()
+	 */
+	public function test_autoload() {
+		$object = new Test_Doc_Hooks();
+
+		$retval = $this->plugin->autoload( get_class( $object ) );
+		$this->assertNull( $retval );
+
+		$retval = $this->plugin->autoload( 'OtherNameSpace\Test' );
+		$this->assertFalse( $retval );
+	}
+
+	/**
 	 * Test locate_plugin.
 	 *
 	 * @see Plugin_Base::locate_plugin()
 	 */
 	public function test_locate_plugin() {
 		$location = $this->plugin->locate_plugin();
+
 		$this->assertEquals( 'foo-bar', $location['dir_basename'] );
 		$this->assertContains( 'plugins/foo-bar', $location['dir_path'] );
 		$this->assertContains( 'plugins/foo-bar', $location['dir_url'] );
@@ -53,35 +69,6 @@ class Test_Plugin_Base extends \WP_UnitTestCase {
 		$this->assertEquals( 'themes/twentysixteen/plugins/foo-bar', $this->plugin->relative_path( '/srv/www/wordpress-develop/src/wp-content/themes/twentysixteen/plugins/foo-bar', 'wp-content', '/' ) );
 	}
 
-	/**
-	 * Tests for trigger_warning().
-	 *
-	 * @see Plugin_Base::trigger_warning()
-	 */
-	public function test_trigger_warning() {
-		$obj = $this;
-		// @codingStandardsIgnoreStart
-		set_error_handler( function ( $errno, $errstr ) use ( $obj ) {
-			$obj->assertEquals( 'FooBar\Plugin: Param is 0!', $errstr );
-			$obj->assertEquals( \E_USER_WARNING, $errno );
-		} );
-		// @codingStandardsIgnoreEnd
-		$this->plugin->trigger_warning( 'Param is 0!', \E_USER_WARNING );
-		restore_error_handler();
-	}
-
-	/**
-	 * Test is_wpcom_vip_prod().
-	 *
-	 * @see Plugin_Base::is_wpcom_vip_prod()
-	 */
-	public function test_is_wpcom_vip_prod() {
-		if ( ! defined( 'WPCOM_IS_VIP_ENV' ) ) {
-			$this->assertFalse( $this->plugin->is_wpcom_vip_prod() );
-			define( 'WPCOM_IS_VIP_ENV', true );
-		}
-		$this->assertEquals( WPCOM_IS_VIP_ENV, $this->plugin->is_wpcom_vip_prod() );
-	}
 
 	/**
 	 * Test add_doc_hooks().
@@ -89,7 +76,8 @@ class Test_Plugin_Base extends \WP_UnitTestCase {
 	 * @see Plugin_Base::add_doc_hooks()
 	 */
 	public function test_add_doc_hooks() {
-		$object = new Test_Doc_hooks();
+		$object = new Test_Doc_Hooks();
+
 		$this->assertFalse( has_action( 'init', array( $object, 'init_action' ) ) );
 		$this->assertFalse( has_action( 'the_content', array( $object, 'the_content_filter' ) ) );
 		$this->plugin->add_doc_hooks( $object );
@@ -104,26 +92,22 @@ class Test_Plugin_Base extends \WP_UnitTestCase {
 	 * @see Plugin_Base::add_doc_hooks()
 	 */
 	public function test_add_doc_hooks_error() {
-		$mock = $this->getMockBuilder( 'FooBar\Plugin' )
-			->setMethods( array( 'is_wpcom_vip_prod' ) )
-			->getMock();
+		$object = new Test_Doc_Hooks();
+		$that = $this;
 
-		$mock->method( 'is_wpcom_vip_prod' )
-			->willReturn( false );
+		$this->plugin->add_doc_hooks( $object );
 
-		$this->assertFalse( $mock->is_wpcom_vip_prod() );
-
-		$obj = $this;
 		// @codingStandardsIgnoreStart
-		set_error_handler( function ( $errno, $errstr ) use ( $obj, $mock ) {
-			$obj->assertEquals( sprintf( 'The add_doc_hooks method was already called on %s. Note that the Plugin_Base constructor automatically calls this method.', get_class( $mock ) ), $errstr );
-			$obj->assertEquals( \E_USER_NOTICE, $errno );
+		set_error_handler( function ( $errno, $errstr ) use ( $that, $object ) {
+			$that->assertEquals( sprintf( 'The add_doc_hooks method was already called on %s. Note that the Plugin_Base constructor automatically calls this method.', get_class( $object ) ), $errstr );
+			$that->assertEquals( \E_USER_NOTICE, $errno );
 		} );
 		// @codingStandardsIgnoreEnd
-		$mock->add_doc_hooks();
+
+		$this->plugin->add_doc_hooks( $object );
 		restore_error_handler();
 
-		$mock->remove_doc_hooks();
+		$this->plugin->remove_doc_hooks( $object );
 	}
 
 	/**
@@ -132,7 +116,8 @@ class Test_Plugin_Base extends \WP_UnitTestCase {
 	 * @see Plugin_Base::remove_doc_hooks()
 	 */
 	public function test_remove_doc_hooks() {
-		$object = new Test_Doc_hooks();
+		$object = new Test_Doc_Hooks();
+
 		$this->plugin->add_doc_hooks( $object );
 		$this->assertEquals( 10, has_action( 'init', array( $object, 'init_action' ) ) );
 		$this->assertEquals( 10, has_action( 'the_content', array( $object, 'the_content_filter' ) ) );
@@ -140,12 +125,27 @@ class Test_Plugin_Base extends \WP_UnitTestCase {
 		$this->assertFalse( has_action( 'init', array( $object, 'init_action' ) ) );
 		$this->assertFalse( has_action( 'the_content', array( $object, 'the_content_filter' ) ) );
 	}
+
+	/**
+	 * Test remove_doc_hooks().
+	 *
+	 * @see Plugin_Base::remove_doc_hooks()
+	 */
+	public function test_remove_doc_hooks_alt() {
+		$object = new Test_Doc_Hooks_Alt();
+
+		$this->plugin->add_doc_hooks( $object );
+		$this->assertEquals( 10, has_action( 'init', array( $object, 'init_action' ) ) );
+		$cache = clone $object;
+		$object = null;
+		$this->assertFalse( has_action( 'the_content', array( $cache, 'the_content_filter' ) ) );
+	}
 }
 
 /**
- * Test_Doc_hooks class.
+ * Test_Doc_Hooks class.
  */
-class Test_Doc_hooks {
+class Test_Doc_Hooks {
 
 	/**
 	 * Load this on the init action hook.
@@ -164,6 +164,26 @@ class Test_Doc_hooks {
 	 */
 	public function the_content_filter( $content ) {
 		return $content;
+	}
+}
+
+/**
+ * Test_Doc_Hooks_Alt class.
+ */
+class Test_Doc_Hooks_Alt extends Plugin_Base {
+
+	/**
+	 * Load this on the init action hook.
+	 *
+	 * @action init
+	 */
+	public function init_action() {}
+
+	/**
+	 * Plugin_Base destructor.
+	 */
+	function __destruct() {
+		parent::__destruct();
 	}
 }
 

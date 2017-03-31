@@ -28,18 +28,14 @@ class Plugin extends Plugin_Base {
 	/**
 	 * Register scripts.
 	 *
-	 * @action wp_default_scripts, 11
-	 *
-	 * @param \WP_Scripts $wp_scripts Instance of \WP_Scripts.
+	 * @action wp_enqueue_scripts
 	 */
-	public function register_scripts( \WP_Scripts $wp_scripts ) {}
+	public function register_scripts() {}
 
 	/**
 	 * Register styles.
 	 *
-	 * @action wp_default_styles, 11
-	 *
-	 * @param \WP_Styles $wp_styles Instance of \WP_Styles.
+	 * @action wp_enqueue_scripts
 	 */
-	public function register_styles( \WP_Styles $wp_styles ) {}
+	public function register_styles() {}
 }

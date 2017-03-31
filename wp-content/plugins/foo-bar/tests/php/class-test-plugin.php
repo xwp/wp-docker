@@ -21,9 +21,10 @@ class Test_Plugin extends \WP_UnitTestCase {
 	 */
 	public function test_construct() {
 		$plugin = new Plugin();
+
 		$this->assertEquals( 9, has_action( 'after_setup_theme', array( $plugin, 'init' ) ) );
-		$this->assertEquals( 11, has_action( 'wp_default_scripts', array( $plugin, 'register_scripts' ) ) );
-		$this->assertEquals( 11, has_action( 'wp_default_styles', array( $plugin, 'register_styles' ) ) );
+		$this->assertEquals( 10, has_action( 'wp_enqueue_scripts', array( $plugin, 'register_scripts' ) ) );
+		$this->assertEquals( 10, has_action( 'wp_enqueue_scripts', array( $plugin, 'register_styles' ) ) );
 	}
 
 	/**
@@ -35,8 +36,8 @@ class Test_Plugin extends \WP_UnitTestCase {
 		$plugin = get_plugin_instance();
 
 		add_filter( 'foo_bar_plugin_config', array( $this, 'filter_config' ), 10, 2 );
-		$plugin->init();
 
+		$plugin->init();
 		$this->assertInternalType( 'array', $plugin->config );
 		$this->assertArrayHasKey( 'foo', $plugin->config );
 	}
@@ -51,7 +52,10 @@ class Test_Plugin extends \WP_UnitTestCase {
 	 */
 	public function filter_config( $config, $plugin ) {
 		unset( $config, $plugin ); // Test should actually use these.
-		return array( 'foo' => 'bar' );
+
+		return array(
+			'foo' => 'bar',
+		);
 	}
 
 	/* Put other test functions here... */
