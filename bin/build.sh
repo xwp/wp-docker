@@ -258,6 +258,9 @@ grep "${WP_DOMAIN}" /etc/hosts > /dev/null || echo "Be sure to add '127.0.0.1 ${
 
 # Let's clear out the relevant environment variables (so that stray "phpinfo()" calls don't leak secrets from our code)
 for e in "${envs[@]}"; do
+    if [[ "XDEBUG_CONFIG|PHP_IDE_CONFIG" =~ "$e" ]]; then
+        continue
+    fi
 	unset "$e"
 done
 
