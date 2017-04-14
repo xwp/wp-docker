@@ -14,6 +14,7 @@ services:
             - ./data/mysql:/var/lib/mysql
             - ./logs/nginx:/srv/logs/nginx
             - ./logs/php:/srv/logs/php-fpm
+            - ./logs/xdebug:/srv/logs/xdebug
             - ./config/mysql:/docker-entrypoint-initdb.d
             - ./config/nginx/conf.d/local.conf:/etc/nginx/conf.d/default.conf:ro
             - ./config/nginx/ssl:/etc/ssl
@@ -54,6 +55,7 @@ services:
         volumes_from:
             - data
         environment:
+            WP_ENV: ${WP_ENV}
             WP_DB_HOST: ${WP_DB_HOST}
             WP_DB_NAME: ${WP_DB_NAME}
             WP_DB_USER: ${WP_DB_USER}
