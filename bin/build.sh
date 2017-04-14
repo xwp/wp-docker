@@ -181,6 +181,14 @@ if [ "$WP_DEBUG" ]; then
     set_config 'WP_DEBUG' 1 boolean
 fi
 
+if [ "$WP_ENV" ]; then
+    awk '/^\/\*.*stop editing.*\*\/$/ && c == 0 { c = 1; system("cat") } { print }' wp-config.php > wp-config.tmp <<'EOPHP'
+// Set the environment.
+define( 'WP_ENV', getenv('WP_ENV') );
+EOPHP
+    mv wp-config.tmp wp-config.php
+fi
+
 # Install Core
 if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
     echo
@@ -226,8 +234,8 @@ if [ "${TASK}" == "tests" ]; then
 
     echo "Updating WordPress Test Suite..."
 
-    svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-    svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+    svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes --trust-server-cert
+    svn co https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data --trust-server-cert
 fi
 
 # Ensure the plugin and theme directories exist
@@ -246,6 +254,7 @@ echo
 echo "Activating Plugins..."
 
 wp plugin activate \
+	opcache \
 	query-monitor \
 	wp-redis \
 	--allow-root
@@ -258,6 +267,9 @@ grep "${WP_DOMAIN}" /etc/hosts > /dev/null || echo "Be sure to add '127.0.0.1 ${
 
 # Let's clear out the relevant environment variables (so that stray "phpinfo()" calls don't leak secrets from our code)
 for e in "${envs[@]}"; do
+    if [[ "XDEBUG_CONFIG|PHP_IDE_CONFIG|WP_ENV" =~ "$e" ]]; then
+        continue
+    fi
 	unset "$e"
 done
 

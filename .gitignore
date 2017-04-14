@@ -1,32 +1,33 @@
 # WordPress
-wp-content/themes/twentyseventeen
-wp-content/uploads
-wp-content/upgrade
-wp-config/secrets.php
 wordpress
+wp-config/secrets.php
+wp-content/themes/twentyseventeen
+wp-content/upgrade
+wp-content/uploads
 
 # Test Suite
+wp-tests/coverage
 wp-tests/data
 wp-tests/includes
-wp-tests/coverage
 
 # Docker
-data/*
-logs/*
 .env
+data/*
 docker-custom.yml
+logs/*
 
 # Composer
 composer.lock
-vendor
-wp-content/plugins/wp-redis
-wp-content/plugins/query-monitor
 wp-content/db.php
+wp-content/plugins/opcache
+wp-content/plugins/query-monitor
+wp-content/plugins/wp-redis
+vendor
 
 # Development
+.DS_Store
 .idea
 node_modules
-.DS_Store
 
 # DB Migrations
 config/mysql/*

@@ -16,6 +16,7 @@
         <whitelist processUncoveredFilesFromWhitelist="false">
             <directory suffix=".php">../wp-content/plugins</directory>
             <exclude>
+                <directory suffix=".php">../wp-content/plugins/opcache</directory>
                 <directory suffix=".php">../wp-content/plugins/query-monitor</directory>
                 <directory suffix=".php">../wp-content/plugins/wp-redis</directory>
             </exclude>
