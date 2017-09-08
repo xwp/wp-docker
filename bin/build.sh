@@ -244,7 +244,7 @@ mkdir -p ${WP_CONTENT_DIR}/plugins
 
 # Checking out the default theme
 echo "Checking out default theme..."
-wp theme install ${WP_THEME_NAME} --allow-root
+wp theme install ${WP_THEME_NAME} --allow-root --force
 
 if [ ! is_active_theme ]; then
     wp theme activate ${WP_THEME_NAME} --allow-root

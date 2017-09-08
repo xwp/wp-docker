@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Disable Opcache
- * Description: Disables opcache in the development environment.
+ * Plugin Name: OPcache Disable
+ * Description: Disables OPcache if the WordPress environment variable (WP_ENV) is set to `dev`.
  * Version: 0.1
  * Author: XWP
  * Author URI: http://xwp.co
