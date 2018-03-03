@@ -204,6 +204,14 @@ if ! $(wp core is-installed --allow-root --path=${WP_CORE_DIR}); then
         --skip-email
 fi
 
+# Download Jetpack
+if [ ! -e $WP_CONTENT_DIR/plugins/jetpack ]; then
+	echo "Cloning Jetpack..."
+	# TODO verify this stuff:
+	git config --global http.sslverify "false"
+	git clone --depth 1 https://github.com/Automattic/jetpack $WP_CONTENT_DIR/plugins/jetpack
+fi
+
 if [ "${TASK}" == "tests" ]; then
 
     # Generate the tests SVN tag
@@ -257,6 +265,7 @@ wp plugin activate \
 	opcache \
 	query-monitor \
 	wp-redis \
+  jetpack
 	--allow-root
 
 echo
